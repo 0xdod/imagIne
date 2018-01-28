@@ -31,6 +31,11 @@ CommentService.prototype.delete = async function (filter = defaultFilter) {
 	return await Comment.deleteOne(query, options);
 };
 
+CommentService.prototype.deleteMany = async function (filter = defaultFilter) {
+	const { query, options } = filter;
+	return await Comment.deleteMany(query, options);
+};
+
 CommentService.prototype.create = async function (comment) {
 	const newComment = new Comment(comment);
 	return await newComment.save();

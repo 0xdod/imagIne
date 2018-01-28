@@ -39,10 +39,10 @@ const sessionOptions = app => {
 };
 
 //----- Application settings----------------
-app.set('views', path.join(__dirname, '/views'));
-app.set('static', path.join(__dirname, '/static'));
+app.set('views', path.join(__dirname, '/views/'));
+app.set('static', path.join(__dirname, '/static/'));
 app.set('static_url', '/static/');
-app.set('media', path.join(__dirname, '/media'));
+app.set('media', path.join(__dirname, '/media/'));
 app.set('view engine', '.hbs');
 app.engine('.hbs', hbs.setup(app).engine);
 
@@ -54,12 +54,6 @@ app.use(methodOverride());
 app.use(session(sessionOptions(app)));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(router());
-app.use('/static/', express.static(app.get('static')));
-app.use('/media/', express.static(app.get('media')));
-if (app.get('env') === 'development') {
-	app.use(errorHandler());
-}
 // useful for accessing user object in template
 app.use((req, res, next) => {
 	if (req.user) {
@@ -67,9 +61,16 @@ app.use((req, res, next) => {
 	}
 	next();
 });
+app.use(router());
+app.use('/static/', express.static(app.get('static')));
+app.use('/media/', express.static(app.get('media')));
+if (app.get('env') === 'development') {
+	app.use(errorHandler());
+}
+
 // 404 - errors
 app.use((req, res, next) => {
-	res.locals.showSidebar = false;
+	res.locals.hideSidebar = false;
 	res.status(404).render('404');
 });
 module.exports = app;

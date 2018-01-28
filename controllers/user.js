@@ -1,13 +1,14 @@
-const userService = require('../services/user');
+const { UserService } = require('../services/');
 
 const signup = async (req, res) => {
 	try {
 		if (req.method === 'POST') {
-			await userService.create(req.body);
+			const user = await UserService.create(req.body);
 			console.log('Succesfully created user: ', user);
-			res.redirect('/');
+			res.redirect('/login');
 			return;
 		}
+		res.locals.hideSidebar = true;
 		res.render('signup', {});
 	} catch (err) {
 		res.status(400).render('error', {
@@ -20,7 +21,7 @@ const signup = async (req, res) => {
 //TODO use flash message to display login error
 const login = async (req, res) => {
 	if (req.method === 'POST') {
-		if (req.isAuthenticated) {
+		if (req.isAuthenticated()) {
 			var next = req.body.next || '/';
 			res.redirect(next);
 			return;
@@ -33,6 +34,7 @@ const login = async (req, res) => {
 			  }
 			: null;
 	var next = req.query.next;
+	res.locals.hideSidebar = true;
 	res.render('login', { error, next });
 };
 

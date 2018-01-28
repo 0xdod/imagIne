@@ -31,7 +31,7 @@ module.exports = callback => {
 						{
 							$group: {
 								_id: '1',
-								likesTotal: { $sum: '$likes' },
+								likesTotal: { $sum: '$likesCount' },
 							},
 						},
 					],

@@ -1,138 +1,155 @@
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
 const sidebar = require('../helpers/sidebar');
 const models = require('../models');
 const MD5 = require('md5.js');
-const cloudinary = require('cloudinary');
 
-const index = (req, res) => {
-  const viewModel = {
-    title: '',
-    image: {},
-    comments: [],
-    user: req.user,
-  };
-  models.Image.findOne({ filename: { $regex: req.params.image_id } })
-    .then(image => {
-      if (image) {
-        image.views += 1;
-        viewModel.image = image;
-        viewModel.title = image.title;
-        return image.save();
-      } else {
-        res.redirect('/');
-      }
-    })
-    .then(image => {
-      return models.Comment.find(
-        { image_id: image._id },
-        {},
-        { sort: { timestamp: 1 } }
-      );
-    })
-    .then(comments => {
-      viewModel.comments = comments;
-      sidebar(viewModel, viewModel => {
-        res.render('image', viewModel);
-      });
-    })
-    .catch(err => console.log(err));
-};
+const { CommentService, ImageService } = require('../services');
 
-const isExtAllowed = ext => {
-  const validExts = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'];
-  return validExts.includes(ext);
-};
+const errors = require('../lib/errors');
 
-const create = (req, res) => {
-  if (req.file) {
-    const saveImageToDisk = () => {
-      return new Promise((resolve, reject) => {
-        const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
-        let imgUrl = '';
-
-        for (let i = 0; i < 6; i++) {
-          imgUrl += possible.charAt(
-            Math.floor(Math.random() * possible.length)
-          );
-        }
-        //check if name exists in db
-        models.Image.find({ filename: imgUrl }).then(images => {
-          if (images.length > 0) {
-            saveImage();
-          } else {
-            let tempPath = req.file.path;
-            let ext = path.extname(req.file.originalname).toLowerCase();
-            let targetPath = path.resolve('./public/upload/' + imgUrl + ext);
-
-            if (isExtAllowed(ext)) {
-              try {
-                cloudinary.uploader.upload(tempPath, function (result) {
-                  const newImg = new models.Image({
-                    title: req.body.title,
-                    description: req.body.description,
-                    filename: imgUrl + ext,
-                    url: result.url,
-                    secureURL: result.secure_url,
-                  });
-                  resolve(newImg);
-                });
-              } catch {
-                fs.rename(tempPath, targetPath, err => {
-                  if (err) reject(err);
-
-                  const newImg = new models.Image({
-                    title: req.body.title,
-                    description: req.body.description,
-                    filename: imgUrl + ext,
-                    url: `/public/upload/${imgUrl + ext}`,
-                  });
-                  resolve(newImg);
-                });
-              }
-            } else {
-              fs.unlink(tempPath, err => {
-                res.json(400, {
-                  error: 'Only image files are allowed.',
-                });
-                reject(err);
-              });
-            }
-          }
-        });
-      });
-    };
-
-    saveImageToDisk()
-      .then(image => {
-        return image.save();
-      })
-      .then(image => {
-        res.redirect('/images/' + image.uniqueID);
-      })
-      .catch(err => {
-        fs.unlink(req.file.path, () => console.log('error processing upload'));
-      });
+const detail = async (req, res) => {
+  const viewModel = {};
+  try {
+    const image = await ImageService.get({
+      query: { filename: { $regex: req.params.image_id } },
+    });
+    if (!image) {
+      res.render('404', { showSidebar: false });
+      return;
+    }
+    image.views += 1;
+    viewModel.image = image;
+    viewModel.title = image.title;
+    console.log(image);
+    await image.save();
+    const comments = await CommentService.getMany({
+      query: { image_id: image._id },
+      options: { sort: { timestamp: 1 } },
+    });
+    viewModel.comments = comments;
+    sidebar(viewModel, viewModel => {
+      res.render('image_detail', viewModel);
+    });
+  } catch (err) {
+    console.error(err.stack);
   }
 };
 
-const like = (req, res) => {
+const create = async (req, res) => {
+  const Image = ImageService.getModel();
+  if (!req.file) {
+    res.render('/');
+    return;
+  }
+  try {
+    var uploadStrategy =
+      req.app.get('env') === 'production' ? 'cloudinary' : 'local';
+    const result = await Image.upload(
+      req.file,
+      req.app.get('media'),
+      uploadStrategy
+    );
+    const newImage = await ImageService.create({
+      title: req.body.title,
+      description: req.body.description,
+      filename: result.name,
+      url: result.url,
+      secureURL: result.secure_url,
+    });
+    res.redirect(newImage.getAbsoluteUrl());
+  } catch (err) {
+    fs.unlink(req.file.path)
+      .then(() => {
+        console.log('[successfully deleted]');
+      })
+      .catch(err => {
+        console.log('[cannot delete file] ' + req.file.path);
+      });
+    if (err == errors.UnsupportedFileTypeError) {
+      res.json(400, {
+        error: 'File type unsupported.',
+      });
+    }
+    console.log('[error processing upload]', err);
+    // send flash message
+    res.send('An error occured');
+  }
+};
+
+const likee = (req, res) => {
   models.Image.findOne({ filename: { $regex: req.params.image_id } })
     .then(image => {
       if (!image) {
         throw new Error('Cannot find image');
       }
-      image.likes++;
+      image.likesCount++;
       return image.save();
     })
     .then(image => {
       if (image) {
-        res.json({ likes: image.likes });
+        res.json({ likes: image.likesCount });
       }
     })
     .catch(err => {
       res.json(err);
     });
+};
+
+const like = async (req, res) => {
+  const action = req.body.action;
+  const user = req.user;
+  if (!user) {
+    res.status(403).json({
+      success: false,
+      message: 'cannot identify user',
+    });
+  }
+  try {
+    var image;
+    switch (action) {
+      case 'like':
+        image = await ImageService.findAndUpdate({
+          query: { _id: req.params.image_id, likes: { $ne: user._id } },
+          update: { $inc: { likesCount: 1 }, $push: { likes: user._id } },
+          options: { fields: { likes: user._id, likesCount: 1 }, new: true },
+        });
+        break;
+      case 'unlike':
+        image = await ImageService.findAndUpdate({
+          query: { _id: req.params.image_id, likes: user._id },
+          update: { $inc: { likesCount: -1 }, $pull: { likes: user._id } },
+          options: { fields: { likes: user._id, likesCount: 1 }, new: true },
+        });
+        break;
+      default:
+        res.status(400).send({
+          success: false,
+          message: 'Request not understood',
+        });
+        return;
+    }
+    console.log(image);
+    console.log(action);
+    if (!image) {
+      res.status(404).json({
+        success: false,
+        message: 'cannot find image',
+      });
+      return;
+    }
+    res.json({
+      success: true,
+      likes: image.likesCount,
+      action,
+    });
+  } catch (err) {
+    console.error(err.stack);
+    res.status(500).send({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
 };
 
 const comment = (req, res) => {
@@ -159,34 +176,24 @@ const comment = (req, res) => {
     });
 };
 
-var fsUnlinkPromise = file => {
-  return new Promise((resolve, reject) => {
-    fs.unlink(file, err => {
-      if (err) {
-        if (err.code === 'ENOENT') {
-          return resolve();
-        }
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-};
-
 const remove = async function (req, res) {
-  const image = await models.Image.findOne({
-    filename: { $regex: req.params.image_id },
+  const image = await ImageService.get({
+    query: { filename: { $regex: req.params.image_id } },
   });
-  let file = path.resolve('./public/upload/' + image.filename);
-  await fsUnlinkPromise(file);
-  await models.Comment.deleteMany({ image_id: image._id });
-  let result = await models.Image.deleteOne({ _id: image._id });
-  return result.ok === 1 ? res.json(true) : res.json(false);
+  try {
+    let file = path.resolve(req.app.get('media') + image.filename);
+    await fs.unlink(file);
+    await CommentService.deleteMany({ query: { image_id: image._id } });
+    let result = await ImageService.delete({ query: { _id: image._id } });
+    return result.ok === 1 ? res.json(true) : res.json(false);
+  } catch (err) {
+    console.error(err.stack);
+    res.status(500).send();
+  }
 };
 
 module.exports = {
-  index,
+  detail,
   create,
   like,
   comment,

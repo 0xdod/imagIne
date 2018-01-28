@@ -36,9 +36,9 @@ UserService.prototype.delete = async function (filter = defaultFilter) {
 UserService.prototype.create = async function (user) {
 	const newUser = new User(user);
 	const hash = await generatePasswordHash(user.password);
-	user.password = hash;
-	user.email = user.email.toLowerCase();
-	user.username = user.username.toLowerCase();
+	newUser.password = hash;
+	newUser.email = newUser.email.toLowerCase();
+	newUser.username = newUser.username.toLowerCase();
 	return await newUser.save();
 };
 

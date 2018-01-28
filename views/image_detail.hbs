@@ -16,19 +16,20 @@
 		<div class="row">
 			<div class="col-md-8">
 				<span
-					class="text-danger"
+					class="{{#if (callMethod user 'hasLiked' image)}}text-danger{{/if}}"
 					id="btn-like"
-					data-id="{{ image.uniqueID }}"
+					data-id="{{ image._id }}"
+					data-action="{{#if (callMethod user 'hasLiked' image)}}un{{/if}}like"
 				>
 					<i class="fas fa-heart"></i>
 				</span>
-				<strong class="likes-count">{{ image.likes }}</strong> &nbsp;-&nbsp;
+				<strong class="likes-count">{{ image.likesCount }}</strong> &nbsp;-&nbsp;
 				<i class="fa fa-eye"></i>
 				<strong>{{ image.views}}</strong> &nbsp; - &nbsp;
 				Posted: <em class="text-muted">{{timeago image.timestamp }}</em>
 			</div>
 			<div class="col-md-4 text-right">
-				<span class="text-danger" id="btn-delete" data-id="{{ image.uniqueID }}">
+				<span class="text-danger" id="btn-delete" data-id="{{ image._id }}">
 					<i class="fas fa-trash-alt"></i>
 				</span>
 			</div>

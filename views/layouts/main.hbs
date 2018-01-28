@@ -5,10 +5,10 @@
 		{{> header this }}
 		<div class="container-fluid">
 			<div class="row">
-				<main class="col-md-{{#if showSidebar}}8{{else}}12{{/if}}">
+				<main class="col-md-{{#if (not hideSidebar)}}8{{else}}12{{/if}}">
 					{{{ body }}}
 				</main>
-				{{#if showSidebar }}
+				{{#if (not hideSidebar) }}
 				<aside class="col-md-4">
 					{{> stats this }} {{> popular this }} {{> comments this }}
 				</aside>

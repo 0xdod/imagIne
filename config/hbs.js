@@ -8,8 +8,8 @@ const setup = app => {
 	return exphbs.create({
 		extname: '.hbs',
 		defaultLayout: 'main',
-		layoutsDir: app.get('views') + '/layouts',
-		partialsDir: [app.get('views') + '/partials'],
+		layoutsDir: path.join(app.get('views'), '/layouts'),
+		partialsDir: [path.join(app.get('views'), '/partials')],
 		runtimeOptions: {
 			allowProtoPropertiesByDefault: true,
 			allowProtoMethodsByDefault: true,
@@ -59,6 +59,9 @@ const setup = app => {
 				return newUrl;
 			},
 			getEnv: () => app.get('env'),
+			callMethod: (obj, methodName, param) => {
+				return obj[methodName](param);
+			},
 		},
 	});
 };

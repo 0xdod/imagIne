@@ -40,14 +40,9 @@ userSchema.virtual('fullname').get(function () {
 	return `${this.firstname} ${this.lastname}`;
 });
 
-userSchema.methods.uploadImage = async function (image) {
-	const user = this;
-	const filename = generateRandomName(6);
-	const images = await Image.find({ filename: filename });
-	if (images.length > 0) {
-		saveImage();
-		return;
-	}
+userSchema.methods.hasLiked = function (image) {
+	const hasLiked = image.likes.includes(this._id);
+	return hasLiked;
 };
 
 module.exports = mongoose.model('User', userSchema);
