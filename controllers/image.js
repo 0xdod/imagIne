@@ -3,7 +3,6 @@ const path = require('path');
 const _ = require('lodash');
 
 const sidebar = require('../helpers/sidebar');
-const models = require('../models');
 
 const { CommentService, ImageService } = require('../services');
 
@@ -37,45 +36,48 @@ const detail = async (req, res) => {
 };
 
 const create = async (req, res) => {
-  const Image = ImageService.getModel();
-  if (!req.file) {
-    res.render('/');
+  if (req.method === 'POST') {
+    await createImagePost(req, res);
     return;
   }
+  res.render('image_create', {});
+};
+
+async function createImagePost(req, res) {
   try {
     var uploadStrategy =
       req.app.get('env') === 'production' ? 'cloudinary' : 'local';
-    const result = await Image.upload(
+    const result = await ImageService.upload(
       req.file,
       req.app.get('media'),
       uploadStrategy
     );
-    const newImage = await ImageService.create({
+    const payload = {
       title: req.body.title,
       description: req.body.description,
       filename: result.name,
       url: result.url,
       secureURL: result.secure_url,
-    });
+    };
+    const image = NewImage(req.user, payload);
+    const newImage = await ImageService.create(image);
+    req.flash('success', 'Image posted');
     res.redirect(newImage.getAbsoluteUrl());
   } catch (err) {
-    fs.unlink(req.file.path)
-      .then(() => {
-        console.log('[successfully deleted]');
-      })
-      .catch(err => {
-        console.log('[cannot delete file] ' + req.file.path);
-      });
+    await fs.unlink(req.file.path);
     if (err == errors.UnsupportedFileTypeError) {
       res.json(400, {
         error: 'File type unsupported.',
       });
     }
     console.log('[error processing upload]', err);
-    // send flash message
-    res.send('An error occured');
+    req.flash(
+      'error',
+      `Error: Image cannot be uploaded because ${err.message}`
+    );
+    res.redirect('/');
   }
-};
+}
 
 const like = async (req, res) => {
   try {
@@ -125,45 +127,54 @@ const comment = async (req, res) => {
     const query = { _id: image_id };
     var image = await ImageService.get({ query, projection: { likes: 0 } });
     if (!image) {
-      res.status(404).render('404');
+      res.status(404).json({
+        success: false,
+        message: 'image not found.',
+      });
       return;
     }
-    const comment = getCommentParam(user, req.body);
+    const comment = NewComment(user, req.body);
     const newComment = await CommentService.create(comment);
-    req.flash('success', `Comment successfully added.`);
-    res.redirect(`${image.getAbsoluteUrl()}#${newComment._id}`);
+    res.json({
+      success: true,
+      newComment: newComment,
+    });
+    //req.flash('success', `Your comment added.`);
+    //res.redirect(`${image.getAbsoluteUrl()}#${newComment._id}`);
   } catch (err) {
-    req.flash(
-      'error',
-      `Failed to add comment because ${err.message} try again`
-    );
-    res.redirect(image.getAbsoluteUrl());
-    console.log(err);
+    // req.flash(
+    //   'error',
+    //   `Failed to add comment because ${err.message}, please try again`
+    // );
+    // res.redirect(image.getAbsoluteUrl());
+
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error.',
+    });
+    console.error(err.stack);
   }
 };
 
-function getCommentParam(user, payload) {
-  const author = _.pick(user, ['_id', 'username', 'avatar_url']);
-  console.log(author);
-  return {
-    user_id: user._id,
-    user: author,
-    image_id: payload.image_id,
-    comment: payload.comment,
-    timestamp: Date.now(),
-  };
-}
-
 const remove = async function (req, res) {
-  const image = await ImageService.get({
-    query: { _id: req.params.image_id },
-  });
   try {
+    const query = { _id: req.params.image_id };
+    const image = await ImageService.get({ query });
+    if (image.user_id !== req.user._id) {
+      res.status(401);
+      res.json({
+        error: 'Unauthorized',
+      });
+      return;
+    }
     let file = path.resolve(req.app.get('media') + image.filename);
+    //delete file from cloudinary if possible.
     await fs.unlink(file);
-    await CommentService.deleteMany({ query: { image_id: image._id } });
     let result = await ImageService.delete({ query: { _id: image._id } });
-    return result.ok === 1 ? res.json(true) : res.json(false);
+    req.flash('success', 'image successfully deleted.');
+    return result.ok === 1
+      ? res.json({ deleted: true })
+      : res.json({ deleted: false });
   } catch (err) {
     console.error(err.stack);
     res.status(500).send();
@@ -177,3 +188,27 @@ module.exports = {
   comment,
   remove,
 };
+
+function NewComment(user, payload) {
+  const author = _.pick(user, ['_id', 'username', 'avatar_url']);
+  return {
+    user_id: user._id,
+    user: author,
+    image_id: payload.image_id,
+    comment: payload.comment,
+    timestamp: Date.now(),
+  };
+}
+
+function NewImage(user, payload) {
+  const author = _.pick(user, ['_id', 'username', 'avatar_url']);
+  return {
+    user_id: user._id,
+    user: author,
+    title: payload.title,
+    description: payload.description,
+    url: payload.url,
+    filename: payload.filename,
+    secureURL: payload.secureURL,
+  };
+}

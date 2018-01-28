@@ -1,0 +1,74 @@
+<section id="upload-form-section" class="card border border-primary mb-4">
+	<div class="card-header bg-primary text-white">
+		<h3 class="mb-0">
+			Upload an Image
+		</h3>
+	</div>
+	<form
+		id="upload-new-form"
+		action="/images"
+		method="POST"
+		enctype="multipart/form-data"
+	>
+		<div class="card-body">
+			<div class="form-group row col-md-12">
+				<label for="file" class="col-md-2 col-form-label control-label"
+					>Browse:</label
+				>
+
+				<input
+					type="file"
+					name="file"
+					id="file"
+					class="form-control-file col-md-10"
+					required
+				/>
+			</div>
+			<div class="form-group row col-md-12">
+				<label
+					for="title"
+					class="col-md-2 col-form-label control-label"
+				>
+					Title:
+				</label>
+				<div class="col-md-10">
+					<input
+						type="text"
+						name="title"
+						class="form-control"
+						required
+					/>
+				</div>
+			</div>
+			<div class="form-group row col-md-12">
+				<label
+					style="word-wrap: normal;"
+					class="col-md-2 col-form-label control-label"
+					for="description"
+					>Description:
+				</label>
+				<div class="col-md-10">
+					<textarea
+						name="description"
+						id=""
+						cols="30"
+						rows="2"
+						class="form-control"
+					></textarea>
+				</div>
+			</div>
+			<div class="form-group row col-md-12">
+				<div class="col-md-12 text-right">
+					<button
+						class="btn btn-success"
+						type="submit"
+						id="submit-btn"
+					>
+						<i class="fa fa-cloud-upload-alt"></i>
+						Upload Image
+					</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</section>

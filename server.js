@@ -13,9 +13,8 @@ var listener = server.listen(port, function () {
 });
 
 /*TODO
-- add users, auth, password reset, password change profiles. etc
-- add dark mode
+- add users, password reset, password change password, user profiles. etc
+- add dark mode, light mode.
 - resize all uploaded images
-- make comment to use AJAX instead of full reloads
 - Check notes on refactoring and improvements
 */

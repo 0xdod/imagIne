@@ -17,7 +17,7 @@ module.exports = () => {
 	);
 	router.get('/signup', user.signup);
 	router.post('/signup', user.signup);
-	router.get('/logout', user.logout);
+	router.post('/logout', user.logout);
 
 	return router;
 };

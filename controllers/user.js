@@ -17,7 +17,6 @@ const signup = async (req, res) => {
 	}
 };
 
-//TODO use flash message to display login error
 const login = async (req, res) => {
 	if (req.method === 'POST') {
 		if (req.isAuthenticated()) {

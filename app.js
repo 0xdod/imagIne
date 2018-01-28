@@ -75,7 +75,12 @@ if (app.get('env') === 'development') {
 
 // 404 - errors
 app.use((req, res, next) => {
-	res.locals.hideSidebar = false;
+	res.locals.hideSidebar = true;
 	res.status(404).render('404');
+});
+
+app.use((error, req, res, next) => {
+	res.locals.hideSidebar = true;
+	res.status(500).render('error', { error });
 });
 module.exports = app;

@@ -1,40 +1,56 @@
 <section id="image-card" class="card border border-primary mb-4">
 	<div class="card-header bg-primary text-white">
-		<span class="font-weight-bold">{{ image.title }}</span>
+		<h1 class="font-weight-bold">{{ image.title }}</h1>
+		<div class="user-info">
+			<img
+				class="media-object mr-2"
+				width="45"
+				height="45"
+				src="{{image.user.avatar_url}}"
+				alt=""
+				style="border-radius: 50%;"
+			/>
+			<span>{{image.user.username}}</span>
+		</div>
 	</div>
 	<div class="card-body">
 		<p class="">{{ image.description }}</p>
 		<div class="col-md-12 text-center">
-			<img
-				src="{{image.url}}"
-				alt=""
-				class="img-thumbnail"
-			/>
+			<img src="{{image.url}}" alt="" class="img-thumbnail" />
 		</div>
 	</div>
+	{{#if user}}
 	<div class="card-footer">
 		<div class="row">
 			<div class="col-md-8">
 				<span
-					class="{{#if (callMethod user 'hasLiked' image)}}text-danger{{/if}}"
+					class="{{#if (callMethod user 'hasLiked' image)}}text-danger{{/if}} pointer"
 					id="btn-like"
 					data-id="{{ image._id }}"
 					data-action="{{#if (callMethod user 'hasLiked' image)}}un{{/if}}like"
 				>
 					<i class="fas fa-heart"></i>
 				</span>
-				<strong class="likes-count">{{ image.likesCount }}</strong> &nbsp;-&nbsp;
+				<strong class="likes-count">{{ image.likesCount }}</strong>
+				&nbsp;-&nbsp;
 				<i class="fa fa-eye"></i>
-				<strong>{{ image.views}}</strong> &nbsp; - &nbsp;
-				Posted: <em class="text-muted">{{timeago image.timestamp }}</em>
+				<strong>{{ image.views}}</strong> &nbsp; - &nbsp; Posted:
+				<em class="text-muted">{{timeago image.timestamp }}</em>
 			</div>
+			{{#if (eq user.username image.user.username) }}
 			<div class="col-md-4 text-right">
-				<span class="text-danger" id="btn-delete" data-id="{{ image._id }}">
+				<span
+					class="text-danger pointer"
+					id="btn-delete"
+					data-id="{{ image._id }}"
+				>
 					<i class="fas fa-trash-alt"></i>
 				</span>
 			</div>
+			{{/if}}
 		</div>
 	</div>
+	{{/if}}
 </section>
 
 <section id="comments-card" class="card mb-4">
@@ -56,19 +72,33 @@
 		</div>
 	</div>
 	<div class="card-body" style="word-wrap: normal;">
+		{{#if user }}
 		<blockquote class="blockquote" id="post-comment">
 			<div class="row">
-				<form method="POST" action="/images/{{ image.uniqueID }}/comment" class="col-sm-12">
-					<input type="hidden" name="image_id" value={{ image._id }}>
+				<form
+					method="POST"
+					action="/images/{{ image.uniqueID }}/comment"
+					class="col-sm-12"
+					id="comment-form"
+					name="comment-form"
+				>
+					<input
+						type="hidden"
+						name="image_id"
+						value="{{image._id}}"
+					/>
 					<div class="form-group row col-sm-12">
-						<label class="col-sm-2 col-form-label control-label" for="comment"
+						<label
+							class="col-sm-2 col-form-label control-label"
+							for="comment"
 							>Comment:</label
 						>
 						<div class="col-sm-10">
 							<textarea
 								class="form-control"
 								name="comment"
-								rows="2"
+								rows="6"
+								required
 							></textarea>
 						</div>
 					</div>
@@ -77,7 +107,7 @@
 							<button
 								type="submit"
 								id="comment-btn"
-								class="btn btn-success"
+								class="btn btn-success px-5"
 								type="button"
 							>
 								<i class="fa fa-comment"></i>
@@ -89,7 +119,7 @@
 			</div>
 		</blockquote>
 
-		<ul class="media-list">
+		<ul class="media-list" id="comment-list">
 			{{#each comments}}
 			<li class="media mb-2" id="{{_id}}">
 				<a class="pull-left" href="#">
@@ -102,11 +132,19 @@
 					<strong class="media-heading">{{ user.username }}</strong>
 					<small class="text-muted">{{ timeago timestamp }}</small>
 					<br />
-					{{ comment }}
+					<p>{{ comment }}</p>
 				</div>
 			</li>
 			{{/each}}
 		</ul>
+		{{ else }}
+		<div class="">
+			<p class="text-info">
+				You must be logged in to post a comment
+				<a href="/login">login to your account</a> or
+				<a href="/signup">sign up</a> if you don't have an account
+			</p>
+		</div>
+		{{/if}}
 	</div>
 </section>
-

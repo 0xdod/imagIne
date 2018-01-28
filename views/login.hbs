@@ -1,36 +1,46 @@
-{{# extend "title" }}
-Log-in
-{{/extend}}
+{{# extend "title" }} Log-in {{/extend}}
 
 {{#if error }}
-	<p class="alert alert-danger">{{error.message}}</p>
+<p class="alert alert-danger">{{error.message}}</p>
 {{/if}}
-<div class="card mx-auto my-auto">
-	<div class="card-body">
-		
-		<form action="/login" method="POST">
-			<input type="hidden" name="next" value="{{next}}">
-			<div class="form-group">
-				<label for="username">Username or Email:</label>
-				<input
-					type="text"
-					id="username"
-					name="username"
-					class="form-control"
-				/>
-			</div>
-			<div class="form-group">
-				<label for="password">Password:</label>
-				<input
-					type="password"
-					id="password"
-					name="password"
-					class="form-control"
-				/>
-			</div>
-			<div class="">
-				<input type="submit" class="btn btn-primary btn-block" value="Log in" />
-			</div>
-		</form>
+
+<div class="container">
+	<div class="card col-md-4 mx-auto">
+		<div class="card-body">
+			<p class="text-info text-right">Don't have account?
+				<a href="/signup">Sign up</a>
+			</p>
+			<form action="/login" method="POST">
+				<input type="hidden" name="next" value="{{next}}" />
+				<div class="form-group">
+					<label for="username">Username or Email:</label>
+					<input
+						type="text"
+						id="username"
+						name="username"
+						class="form-control"
+					/>
+				</div>
+				<div class="form-group">
+					<label for="password">Password:</label>
+					<input
+						type="password"
+						id="password"
+						name="password"
+						class="form-control"
+					/>
+					<div class="text-right">
+						<a href="javascript:void(0)">Forgot password?</a>
+					</div>
+				</div>
+				<div class="">
+					<input
+						type="submit"
+						class="btn btn-primary btn-block"
+						value="Log in"
+					/>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>

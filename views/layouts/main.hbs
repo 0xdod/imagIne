@@ -1,24 +1,33 @@
 <!DOCTYPE html>
-<html class="h-100" lang="en">
+<html lang="en">
 	{{> head this }}
-	<body class="h-100">
+	<body>
 		{{> header this }}
-		<div class="col-md-12">
-			{{# if messages }}
+		{{# if messages }}
+		<div>
 			  {{#if messages.success }}
-			    <div class="alert alert-success">{{messages.success}}</div>
+			    <div class="alert alert-success alert-dismissible fade show" role="alert"><strong>{{messages.success}}</strong>
+ 				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    				<span aria-hidden="true">&times;</span>
+ 				 </button>
+			    </div>
+			    
 			  {{ else if messages.error }}
-			    <div class="alert alert-danger">{{messages.error}}</div>
+			    <div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>{{messages.error}}</strong>
+ 				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    				<span aria-hidden="true">&times;</span>
+ 				 </button>
+			    </div>
 			  {{/if}}
-			{{/if}}
 		</div>
+		{{/if}}
 		<div class="container-fluid">
 			<div class="row">
-				<main class="col-md-{{#if (not hideSidebar)}}8{{else}}12{{/if}}">
+				<main class="col-md-{{#if (not hideSidebar)}}9{{else}}12{{/if}} mb-auto">
 					{{{ body }}}
 				</main>
 				{{#if (not hideSidebar) }}
-				<aside class="col-md-4">
+				<aside class="col-md-3">
 					{{> stats this }} {{> popular this }} {{> comments this }}
 				</aside>
 				{{/if}}
@@ -26,12 +35,14 @@
 		</div>
 		{{> footer this }}
 
+		
 		{{#if (eq 'production' getEnv )}}
-
 		{{ else }}
 		<script src="{{ static 'js/lib/jquery.min.js' }}"></script>
 		<script src="{{ static 'js/lib/bootstrap.bundle.min.js' }}"></script>
 		{{/if}}
+		<script src="{{ static 'js/lib/moment.min.js' }}"></script>
+		<script src="{{ static 'js/lib/mustache.min.js' }}"></script>
 		<script src="{{ static 'js/app.js' }}"></script>
 		{{{block "scripts"}}}
 	</body>

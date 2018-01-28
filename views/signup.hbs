@@ -1,96 +1,83 @@
-{{# extend "title" }}
-Sign up
-{{/extend}}
-
-{{#if error }}
-	<p class="alert alert-danger">{{error.message}}</p>
+{{# extend "title" }} Sign up {{/extend}} {{#if error }}
+<p class="alert alert-danger">{{error.message}}</p>
 {{/if}}
+<div class="container">
+	<div class="card col-md-4 mx-auto">
+		<div class="card-body">
+			<p class="text-info text-right">
+				Already have an account?
+				<a href="/login">Sign in</a>
+			</p>
+			<form action="/signup" method="POST">
+				<div class="form-group">
+					<label for="email">Email:</label>
+					<input
+						type="email"
+						id="email"
+						name="email"
+						class="form-control"
+						autofocus
+					/>
+				</div>
 
-<div class="card mx-auto my-auto">
-	<div class="card-body">
-		<form action="/signup" method="POST">
-			<div class="row">
-				<div class="col">
-					<div class="form-group">
-						<label for="email">Email:</label>
-						<input
-							type="email"
-							id="email"
-							name="email"
-							class="form-control"
-							autofocus
-						/>
-					</div>
+				<div class="form-group">
+					<label for="username">Username:</label>
+					<input
+						type="text"
+						id="username"
+						name="username"
+						class="form-control"
+					/>
 				</div>
-				<div class="col">
-					<div class="form-group">
-						<label for="username">Username:</label>
-						<input
-							type="text"
-							id="username"
-							name="username"
-							class="form-control"
-						/>
-					</div>
-				</div>
-			</div>
 
-			<div class="row">
-				<div class="col">
-					<div class="form-group">
-						<label for="firstname">Firstname:</label>
-						<input
-							type="ftext"
-							id="firstname"
-							name="firstname"
-							class="form-control"
-						/>
-					</div>
+				<div class="form-group">
+					<label for="firstname">Firstname:</label>
+					<input
+						type="ftext"
+						id="firstname"
+						name="firstname"
+						class="form-control"
+					/>
 				</div>
-				<div class="col">
-					<div class="form-group">
-						<label for="lastname">Lastname:</label>
-						<input
-							type="text"
-							id="lastname"
-							name="lastname"
-							class="form-control"
-						/>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					<div class="form-group">
-						<label for="password">Password:</label>
-						<input
-							type="password"
-							id="password"
-							name="password"
-							class="form-control"
-						/>
-					</div>
-				</div>
-				<div class="col">
-					<div class="form-group">
-						<label for="password2">Confirm Password:</label>
-						<input
-							type="password"
-							id="password2"
-							name="password2"
-							class="form-control"
-						/>
-					</div>
-				</div>
-			</div>
 
-			<div>
-				<input
-					type="submit"
-					class="btn btn-primary btn-block"
-					value="Sign up"
-				/>
-			</div>
-		</form>
+				<div class="form-group">
+					<label for="lastname">Lastname:</label>
+					<input
+						type="text"
+						id="lastname"
+						name="lastname"
+						class="form-control"
+					/>
+				</div>
+
+				<div class="form-group">
+					<label for="password">Password:</label>
+					<input
+						type="password"
+						id="password"
+						name="password"
+						class="form-control"
+					/>
+				</div>
+
+				<div class="form-group">
+					<label for="password2">Confirm Password:</label>
+					<input
+						type="password"
+						id="password2"
+						name="password2"
+						class="form-control"
+					/>
+				</div>
+
+				<div>
+					<input
+						type="submit"
+						class="btn btn-primary btn-block"
+						value="Sign up"
+					/>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>

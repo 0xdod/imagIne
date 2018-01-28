@@ -18,6 +18,6 @@ Alternately, to quickly try out this app live, you can check it [here](https://i
 ## Application Structure
 
 -   `server.js` - The entry point to our application. This file starts the server.
--   `config/` - This folder contains configuration for passport as well as a central location for configuration/environment variables.
+-   `config/` - This folder contains configuration for passport as well as a central location for configuration/environment variables and templates setup.
 -   `routes/` - This folder contains the route definitions for our app.
 -   `models/` - This folder contains the schema definitions for our Mongoose models.

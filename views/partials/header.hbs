@@ -1,26 +1,51 @@
-<header class="mb-3 border-bottom p-3">
-	<div class="container">
-		<div class="row">
-			<div class="col">
-				<h1><a class="text-decoration-none" href="/">imaGine.io</a></h1>
-			</div>
-			{{#if user }}
-			<div class="col">
-				<button class="btn btn-success text-white mb-2" id="new-upload-button">
-					<i class="fa fa-plus"></i>
-					New
-				</button>
-			</div>
-
-			<div class="ml-auto">
-				<a href="/logout" class="btn btn-sm btn-danger">Logout</a>
-			</div>
-			{{ else }}
-			<div class="ml-md-auto">
-				<a href="/login" class="btn btn-sm btn-outline-primary">Sign in</a>
-				<a href="/signup" class="btn btn-sm btn-primary">Sign up</a>
-			</div>
-			{{/if}}
+<nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark align-items-md-center shadow-sm justify-content-md-between">
+	<a href="/" class="navbar-brand">
+		<strong class="nav-title">imaGine</strong>
+	</a>
+	{{#if user}}
+	<ul class="navbar-nav mr-auto">
+		<li class="nav-item">
+			<a href="/images" class="btn btn-sm btn-success text-white" id="new-upload-button">
+				<i class="fas fa-plus-square"></i>
+				<span class="px-md-2">New post</span>
+			</a>
+		</li>
+	</ul>
+	{{/if}}
+	<button
+		class="navbar-toggler"
+		type="button"
+		data-toggle="collapse"
+		data-target="#navbarSupportedContent"
+		aria-controls="navbarSupportedContent"
+		aria-expanded="false"
+		aria-label="Toggle navigation"
+	>
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse justify-content-md-center" id="navbarSupportedContent">
+		{{#if user}}
+		<div class="col-md-5 d-none d-md-block mx-auto">
+			<form class="w-100" action="/search" class="form-inline">
+				<div class="row">
+					<input type="text" class="form-control col-md-11">
+					<button class="col-md-1 search-btn">
+						<i class="fas fa-search"></i>
+					</button>
+				</div>
+			</form>
 		</div>
+		<div class="">
+			<form method="POST" action="/logout" class="form-inline">
+				<button class="btn btn-sm px-3 btn-danger">Log out</button>
+			</form>
+		</div>
+		{{else}}
+		<div class="ml-md-auto">
+			<a href="/login" class="btn btn-sm px-3 btn-outline-primary">Sign in</a>
+			<a href="/signup" class="btn btn-sm px-3 btn-primary">Sign up</a>
+		</div>
+		{{/if}}
+
 	</div>
-</header>
+</nav>
