@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html class="h-100" lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{#if title}}{{title}}{{else}}imagIne.io{{/if}}</title>
@@ -11,13 +9,4 @@
       href="/public/fontawesome/css/all.min.css"
     />
     <link rel="stylesheet" href="/public/stylesheets/style.css" />
-  </head>
-  <body class="h-100">
-     {{> header this }}
-        {{> @partial-block}}
-     {{> footer this }}
-    <script src="/public/js/lib/jquery.min.js"></script>
-    <script src="/public/js/app.js"></script>
-    {{{block "scripts"}}}
-  </body>
-</html>
+</head>

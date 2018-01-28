@@ -1,49 +1,67 @@
 const path = require('path');
 
-const hbs = require('hbs');
 const express = require('express');
 const bodyParser = require('body-parser');
-//const cookieParser = require('cookie-parser');
+const exphbs = require('express-handlebars');
+const expSession = require('express-session');
+const mongoStore = require('connect-mongo');
 const logger = require('morgan');
 const methodOverride = require('method-override');
 const errorHandler = require('errorhandler');
 const moment = require('moment');
+const passport = require('passport');
 
 const routes = require('./routes');
 
+var blocks = {};
+
+const hbs = app =>
+	exphbs.create({
+		extname: '.hbs',
+		defaultLayout: 'main',
+		layoutsDir: app.get('views') + '/layouts',
+		partialsDir: [app.get('views') + '/partials'],
+		runtimeOptions: {
+			allowProtoPropertiesByDefault: true,
+			allowProtoMethodsByDefault: true,
+		},
+		helpers: {
+			block: function (name) {
+				var val = (blocks[name] || []).join('\n');
+				blocks[name] = [];
+				return val;
+			},
+			eq: (a, b) => a === b,
+			extend: function (name, options) {
+				var block = blocks[name];
+				if (!block) {
+					block = blocks[name] = [];
+				}
+				block.push(options.fn(this));
+			},
+			timeago: ts => moment(ts).startOf('minute').fromNow(),
+			print: a => {
+				console.log(a);
+			},
+		},
+	});
+
 module.exports = app => {
+	app.set('views', path.join(__dirname, '../views'));
+	app.set('view engine', '.hbs');
+	app.engine('.hbs', hbs(app).engine);
+
 	app.use(logger('dev'));
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json());
 	app.use(methodOverride());
-	//app.use(cookieParser('some-secret-value-here'));
+	app.use(expSession({ secret: 'some-secret-value-here' }));
+	app.use(passport.initialize());
+	app.use(passport.session());
 	routes(app);
 	app.use('/public/', express.static(path.join(__dirname, '../public')));
 	if ('development' === app.get('env')) {
 		app.use(errorHandler());
 	}
-	var blocks = {};
-	hbs.registerHelper('extend', function(name, options){
-		var block = blocks[name]
-		if(!block) {
-			block = blocks[name] = []
-		}
-		block.push(options.fn(this))
-	})
-	hbs.registerHelper('block', function(name){
-		var val = (blocks[name] || []).join('\n');
-		blocks[name] = []
-		return val
-	})
-	app.set('views', path.join(__dirname, '../views'));
-	hbs.registerHelper('timeago', function (timestamp) {
-		return moment(timestamp).startOf('minute').fromNow();
-	});
-	hbs.registerHelper('eq', function (a, b) {
-		return a === b
-	});
-	hbs.registerPartials(app.get('views') + '/layouts');
-	hbs.registerPartials(app.get('views') + '/partials');
-	app.set('view engine', 'hbs');
 	return app;
 };

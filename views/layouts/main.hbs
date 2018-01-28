@@ -1,12 +1,21 @@
-{{#> base }}
-<main class="container-lg">
-  <div class="row">
-    <div class="col-md-8">
-      {{> @partial-block}}
-    </div>
-    <aside class="col-md-4">
-      {{> stats this }} {{> popular this }} {{> comments this }}
-    </aside>
-  </div>
-</main>
-{{/base}}
+<!DOCTYPE html>
+<html class="h-100" lang="en">
+	{{> head this }}
+	<body class="h-100">
+		{{> header this }}
+		<main class="container-lg">
+			<div class="row">
+				<div class="col-md-8">
+					{{{ body }}}
+				</div>
+				<aside class="col-md-4">
+					{{> stats this }} {{> popular this }} {{> comments this }}
+				</aside>
+			</div>
+		</main>
+		{{> footer this }}
+		<script src="/public/js/lib/jquery.min.js"></script>
+		<script src="/public/js/app.js"></script>
+		{{{block "scripts"}}}
+	</body>
+</html>

@@ -8,12 +8,12 @@ const user = {
 	username: {
 		type: String,
 		unique: true,
-		required: true
+		required: true,
 	},
 	email: {
 		type: String,
 		required: true,
-		unique: true
+		unique: true,
 	},
 	avatar_url: String,
 	created_at: {
@@ -28,11 +28,10 @@ const user = {
 	},
 };
 
-const UserSchema = new Schema(user);
+const userSchema = new Schema(user);
 
-UserSchema.virtual('fullname')
-	.get(function () {
-		return `${this.firstname} ${this.lastname}`
-	});
+userSchema.virtual('fullname').get(function () {
+	return `${this.firstname} ${this.lastname}`;
+});
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', userSchema);
