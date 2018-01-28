@@ -1,3 +1,5 @@
+const MD5 = require('md5.js');
+
 const { User } = require('../models');
 
 const { generatePasswordHash } = require('../utils/passwordUtils');
@@ -39,6 +41,8 @@ UserService.prototype.create = async function (user) {
 	newUser.password = hash;
 	newUser.email = newUser.email.toLowerCase();
 	newUser.username = newUser.username.toLowerCase();
+	const emailHash = new MD5().update(user.email).digest('hex');
+	newUser.avatar_url = `http://www.gravatar.com/avatar/${emailHash}?d=monsterid&s=45`;
 	return await newUser.save();
 };
 

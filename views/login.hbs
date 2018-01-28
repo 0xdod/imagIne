@@ -2,11 +2,12 @@
 Log-in
 {{/extend}}
 
+{{#if error }}
+	<p class="alert alert-danger">{{error.message}}</p>
+{{/if}}
 <div class="card mx-auto my-auto">
 	<div class="card-body">
-		{{#if error }}
-		<p class="text-danger">{{error.message}}</p>
-		{{/if}}
+		
 		<form action="/login" method="POST">
 			<input type="hidden" name="next" value="{{next}}">
 			<div class="form-group">

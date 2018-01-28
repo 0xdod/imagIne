@@ -2,6 +2,10 @@
 Sign up
 {{/extend}}
 
+{{#if error }}
+	<p class="alert alert-danger">{{error.message}}</p>
+{{/if}}
+
 <div class="card mx-auto my-auto">
 	<div class="card-body">
 		<form action="/signup" method="POST">

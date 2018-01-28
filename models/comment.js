@@ -1,14 +1,12 @@
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
+const ObjectId = Schema.Types.ObjectId;
 
 const comment = {
-	author_id: { type: ObjectId },
-	image_id: { type: ObjectId },
-	email: String,
-	name: String,
-	gravatar: String,
+	image_id: ObjectId,
+	user_id: ObjectId,
+	user: Object,
 	comment: String,
 	timestamp: {
 		type: Date,

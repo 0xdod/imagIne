@@ -1,8 +1,9 @@
-const fs = require('fs/promises');
+const fs = require('fs').promises;
 const path = require('path');
+const _ = require('lodash');
+
 const sidebar = require('../helpers/sidebar');
 const models = require('../models');
-const MD5 = require('md5.js');
 
 const { CommentService, ImageService } = require('../services');
 
@@ -21,7 +22,6 @@ const detail = async (req, res) => {
     image.views += 1;
     viewModel.image = image;
     viewModel.title = image.title;
-    console.log(image);
     await image.save();
     const comments = await CommentService.getMany({
       query: { image_id: image._id },
@@ -77,60 +77,26 @@ const create = async (req, res) => {
   }
 };
 
-const likee = (req, res) => {
-  models.Image.findOne({ filename: { $regex: req.params.image_id } })
-    .then(image => {
-      if (!image) {
-        throw new Error('Cannot find image');
-      }
-      image.likesCount++;
-      return image.save();
-    })
-    .then(image => {
-      if (image) {
-        res.json({ likes: image.likesCount });
-      }
-    })
-    .catch(err => {
-      res.json(err);
-    });
-};
-
 const like = async (req, res) => {
-  const action = req.body.action;
-  const user = req.user;
-  if (!user) {
-    res.status(403).json({
-      success: false,
-      message: 'cannot identify user',
-    });
-  }
   try {
-    var image;
-    switch (action) {
-      case 'like':
-        image = await ImageService.findAndUpdate({
-          query: { _id: req.params.image_id, likes: { $ne: user._id } },
-          update: { $inc: { likesCount: 1 }, $push: { likes: user._id } },
-          options: { fields: { likes: user._id, likesCount: 1 }, new: true },
-        });
-        break;
-      case 'unlike':
-        image = await ImageService.findAndUpdate({
-          query: { _id: req.params.image_id, likes: user._id },
-          update: { $inc: { likesCount: -1 }, $pull: { likes: user._id } },
-          options: { fields: { likes: user._id, likesCount: 1 }, new: true },
-        });
-        break;
-      default:
-        res.status(400).send({
-          success: false,
-          message: 'Request not understood',
-        });
-        return;
+    const action = req.body.action;
+    const user = req.user;
+    var query, update;
+    const options = { fields: { likes: user._id, likesCount: 1 }, new: true };
+    if (action === 'like') {
+      query = { _id: req.params.image_id, likes: { $ne: user._id } };
+      update = { $inc: { likesCount: 1 }, $push: { likes: user._id } };
+    } else if (action === 'unlike') {
+      query = { _id: req.params.image_id, likes: user._id };
+      update = { $inc: { likesCount: -1 }, $pull: { likes: user._id } };
+    } else {
+      res.status(400).send({
+        success: false,
+        message: 'Request not understood',
+      });
+      return;
     }
-    console.log(image);
-    console.log(action);
+    const image = await ImageService.findAndUpdate({ query, update, options });
     if (!image) {
       res.status(404).json({
         success: false,
@@ -152,33 +118,45 @@ const like = async (req, res) => {
   }
 };
 
-const comment = (req, res) => {
-  var localImage = {};
-  models.Image.findOne({ filename: { $regex: req.params.image_id } })
-    .then(image => {
-      if (image) {
-        const newComment = new models.Comment(req.body);
-        //  newComment.gravatar = md5(newComment.email);
-        //remove, use md5
-        newComment.gravatar = new MD5().update(newComment.email).digest('hex');
-        newComment.image_id = image._id;
-        localImage = image;
-        return newComment.save();
-      } else {
-        res.redirect('/');
-      }
-    })
-    .then(comment => {
-      res.redirect(`/images/${localImage.uniqueID}#${comment._id}`);
-    })
-    .catch(err => {
-      console.log(err);
-    });
+const comment = async (req, res) => {
+  try {
+    const user = req.user;
+    const image_id = req.body.image_id;
+    const query = { _id: image_id };
+    var image = await ImageService.get({ query, projection: { likes: 0 } });
+    if (!image) {
+      res.status(404).render('404');
+      return;
+    }
+    const comment = getCommentParam(user, req.body);
+    const newComment = await CommentService.create(comment);
+    req.flash('success', `Comment successfully added.`);
+    res.redirect(`${image.getAbsoluteUrl()}#${newComment._id}`);
+  } catch (err) {
+    req.flash(
+      'error',
+      `Failed to add comment because ${err.message} try again`
+    );
+    res.redirect(image.getAbsoluteUrl());
+    console.log(err);
+  }
 };
+
+function getCommentParam(user, payload) {
+  const author = _.pick(user, ['_id', 'username', 'avatar_url']);
+  console.log(author);
+  return {
+    user_id: user._id,
+    user: author,
+    image_id: payload.image_id,
+    comment: payload.comment,
+    timestamp: Date.now(),
+  };
+}
 
 const remove = async function (req, res) {
   const image = await ImageService.get({
-    query: { filename: { $regex: req.params.image_id } },
+    query: { _id: req.params.image_id },
   });
   try {
     let file = path.resolve(req.app.get('media') + image.filename);

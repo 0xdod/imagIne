@@ -1,7 +1,7 @@
 const path = require('path');
 
-//const bodyParser = require('body-parser');
 const express = require('express');
+const flash = require('connect-flash');
 const session = require('express-session');
 const logger = require('morgan');
 const methodOverride = require('method-override');
@@ -52,6 +52,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride());
 app.use(session(sessionOptions(app)));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 // useful for accessing user object in template
@@ -59,6 +60,10 @@ app.use((req, res, next) => {
 	if (req.user) {
 		res.locals.user = req.user;
 	}
+	next();
+});
+app.use((req, res, next) => {
+	res.locals.messages = req.flash();
 	next();
 });
 app.use(router());

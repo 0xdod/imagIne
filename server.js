@@ -13,7 +13,7 @@ var listener = server.listen(port, function () {
 });
 
 /*TODO
-- add users, auth etc
+- add users, auth, password reset, password change profiles. etc
 - add dark mode
 - resize all uploaded images
 - make comment to use AJAX instead of full reloads

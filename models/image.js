@@ -3,22 +3,30 @@ const path = require('path');
 
 const mongoose = require('mongoose');
 
+const Comment = require('./comment');
+
 const Schema = mongoose.Schema,
-	ObjectId = Schema.ObjectId;
+	ObjectId = Schema.Types.ObjectId;
 
 const { generateRandomName } = require('../utils/utils');
 
 const errors = require('../lib/errors');
 
 const image = {
-	user_id: { type: ObjectId },
-	title: String,
+	user_id: ObjectId,
+	title: {
+		type: String,
+		required: true,
+	},
 	description: String,
 	filename: {
 		type: String,
 		unique: true,
 	},
-	url: String,
+	url: {
+		type: String,
+		required: true,
+	},
 	secureURL: String,
 	views: {
 		type: Number,
@@ -55,6 +63,11 @@ ImageSchema.virtual('commentsCount')
 ImageSchema.methods.getAbsoluteUrl = function () {
 	return `/images/${this.uniqueID}`;
 };
+
+ImageSchema.pre('deleteOne', async function () {
+	const image = this;
+	await Comment.deleteMany({ image_id: image._id });
+});
 
 ImageSchema.statics.upload = async function (file, destDir, uploadStrategy) {
 	const Image = this;
