@@ -1,7 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-
 const User = require('../models/user');
+
 const { validatePassword } = require('../utils/passwordUtils');
 
 const verifyCallback = async (username, password, done) => {

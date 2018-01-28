@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const path = require('path');
 
-const Comment = require('./comment');
-
 const Schema = mongoose.Schema,
 	ObjectId = Schema.ObjectId;
+
+const { generateRandomName } = require('../utils/utils');
 
 const image = {
 	user_id: { type: ObjectId },
@@ -38,7 +38,7 @@ ImageSchema.virtual('commentsCount')
 		return this._commentsCount;
 	})
 	.set(function (count) {
-		this._commentsCount = count
+		this._commentsCount = count;
 	});
-	
+
 module.exports = mongoose.model('Image', ImageSchema);

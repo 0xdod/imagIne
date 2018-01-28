@@ -1,8 +1,10 @@
+const path = require('path');
+
 const exphbs = require('express-handlebars');
 const moment = require('moment');
 
 var blocks = {};
-const hbs = app => {
+const setup = app => {
 	return exphbs.create({
 		extname: '.hbs',
 		defaultLayout: 'main',
@@ -61,4 +63,6 @@ const hbs = app => {
 	});
 };
 
-module.exports = hbs;
+module.exports = {
+	setup,
+};

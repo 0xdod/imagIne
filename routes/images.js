@@ -6,7 +6,7 @@ const router = require('express').Router(),
 const image = require('../controllers/image'),
 	{ authorize } = require('../middleware/auth');
 
-const uploads = multer({ dest: path.join(__dirname, '../public/upload/temp') });
+const uploads = multer({ dest: path.join(__dirname, '../media') });
 
 module.exports = () => {
 	router.use('/', authorize);

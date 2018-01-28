@@ -8,7 +8,18 @@ const dbOptions = {
 	useCreateIndex: true,
 };
 
-mongoose.connect(mongouri, dbOptions);
-mongoose.connection.on('open', () => console.log('Mongoose connected'));
+function init() {
+	mongoose.connect(mongouri, dbOptions);
+	mongoose.connection.on('open', () => console.log('Mongoose connected'));
+	return mongoose;
+}
 
-module.exports = mongoose;
+function getConnection() {
+	return mongoose.connection;
+}
+
+module.exports = {
+	init,
+	getConnection,
+	mongoose,
+};

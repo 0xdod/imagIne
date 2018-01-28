@@ -1,17 +1,19 @@
 const async = require('async');
 
 const sidebar = require('../helpers/sidebar');
-const Image = require('../models').Image;
-const Comment = require('../models').Comment;
+
+const { CommentService, UserService } = require('../services');
 
 const setCommentCounts = function (image, next) {
-	Comment.countDocuments({ image_id: image._id }, (err, counts) => {
-		image.commentsCount = counts;
-		next();
-	}).catch(err => next(err));
+	CommentService.getModel()
+		.countDocuments({ image_id: image._id }, (err, counts) => {
+			image.commentsCount = counts;
+			next();
+		})
+		.catch(err => next(err));
 };
 
-const index = (req, res) => {
+const index = async (req, res) => {
 	let sortBy = req.query.sort;
 	const viewModel = {
 		title: 'Home | imaGine.io',
@@ -19,8 +21,7 @@ const index = (req, res) => {
 		sortBy,
 		user: req.user,
 	};
-	var sortOptions;
-	switch (req.query.sort) {
+	switch (sortBy) {
 		case 'likes':
 			sortOptions = { likes: -1 };
 			break;
@@ -28,17 +29,21 @@ const index = (req, res) => {
 			sortOptions = { timestamp: -1 };
 			break;
 	}
-	Image.find({}, {}, { sort: sortOptions })
-		.then(images => {
-			viewModel.images = images;
-			async.each(images, setCommentCounts, err => {
-				if (err) throw err;
-				sidebar(viewModel, viewModel => {
-					res.render('index', viewModel);
-				});
+	try {
+		const images = await UserService.getMany({
+			options: { sort: sortOptions },
+		});
+		viewModel.images = images;
+		async.each(images, setCommentCounts, err => {
+			if (err) throw err;
+			sidebar(viewModel, viewModel => {
+				res.locals.showSidebar = true;
+				res.render('index', viewModel);
 			});
-		})
-		.catch(err => console.log(err));
+		});
+	} catch (err) {
+		console.log(err.stack);
+	}
 };
 
 module.exports = { index };

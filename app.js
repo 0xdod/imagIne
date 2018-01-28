@@ -6,16 +6,16 @@ const session = require('express-session');
 const logger = require('morgan');
 const methodOverride = require('method-override');
 const errorHandler = require('errorhandler');
-
 const MongoStore = require('connect-mongo')(session);
 
-const mongoose = require('./db/mongoose');
 const passport = require('./config/passport');
 const hbs = require('./config/hbs');
 const router = require('./routes');
 
+const connection = require('./db').getConnection();
+
 const mongoStore = new MongoStore({
-	mongooseConnection: mongoose.connection,
+	mongooseConnection: connection,
 	collection: 'sessions',
 });
 
@@ -32,7 +32,6 @@ const sessionOptions = app => {
 			maxAge: 1000 * 60 * 60 * 24,
 		},
 	};
-
 	if (app.get('env') === 'production') {
 		opts.cookie.secure = true;
 	}
@@ -40,12 +39,12 @@ const sessionOptions = app => {
 };
 
 //----- Application settings----------------
-app.set('views', path.join(__dirname, '../views'));
-app.set('static', path.join(__dirname, '../static'));
+app.set('views', path.join(__dirname, '/views'));
+app.set('static', path.join(__dirname, '/static'));
 app.set('static_url', '/static/');
-app.set('media', path.join(__dirname, '../media'));
+app.set('media', path.join(__dirname, '/media'));
 app.set('view engine', '.hbs');
-app.engine('.hbs', hbs(app).engine);
+app.engine('.hbs', hbs.setup(app).engine);
 
 //-------Middlewares-------------------------
 app.use(logger('dev'));
@@ -61,6 +60,13 @@ app.use('/media/', express.static(app.get('media')));
 if (app.get('env') === 'development') {
 	app.use(errorHandler());
 }
+// useful for accessing user object in template
+app.use((req, res, next) => {
+	if (req.user) {
+		res.locals.user = req.user;
+	}
+	next();
+});
 // 404 - errors
 app.use((req, res, next) => {
 	res.locals.showSidebar = false;
