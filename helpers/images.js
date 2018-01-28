@@ -1,43 +1,12 @@
+const models = require('../models');
+const async = require('async');
+
 module.exports = {
-	popular: function () {
-		var images = [
-			{
-				uniqueID: 1,
-				title: 'Image 1',
-				description: 'A Sample image',
-				filename: 'Sample1.jpg',
-				views: '10',
-				likes: '1',
-				timestamp: Date.now(),
-			},
-			{
-				uniqueID: 2,
-				title: 'Image 2',
-				description: 'Another Sample image',
-				filename: 'Sample2.jpg',
-				views: 10,
-				likes: '1',
-				timestamp: Date.now(),
-			},
-			{
-				uniqueID: 3,
-				title: 'Image 3',
-				description: 'Yet another Sample image',
-				filename: 'Sample3.jpg',
-				views: 10,
-				likes: 1,
-				timestamp: Date.now(),
-			},
-			{
-				uniqueID: 1,
-				title: 'Image 1',
-				description: 'A Sample image',
-				filename: 'Sample1.jpg',
-				views: '10',
-				likes: '1',
-				timestamp: Date.now(),
-			},
-		];
-		return images;
+	popular: callback => {
+		models.Image.find({}, {}, { limit: 9, sort: { likes: -1 } })
+			.then(images => {
+				callback(null, images);
+			})
+			.catch(err => callback(err));
 	},
 };

@@ -101,7 +101,9 @@ const create = (req, res) => {
 			})
 			.catch(err => {
 				console.log(e);
-				fs.unlink(req.file.path, () => {});
+				fs.unlink(req.file.path, () =>
+					console.log('error processing upload')
+				);
 			});
 	}
 };
@@ -126,6 +128,7 @@ const like = (req, res) => {
 };
 
 const comment = (req, res) => {
+	var localImage = {};
 	models.Image.findOne({ filename: { $regex: req.params.image_id } })
 		.then(image => {
 			if (image) {
@@ -136,14 +139,14 @@ const comment = (req, res) => {
 					.update(newComment.email)
 					.digest('hex');
 				newComment.image_id = image._id;
-				newComment.image = image;
+				localImage = image;
 				return newComment.save();
 			} else {
 				res.redirect('/');
 			}
 		})
 		.then(comment => {
-			res.redirect(`/images/${comment.image.uniqueID}#${comment._id}`);
+			res.redirect(`/images/${localImage.uniqueID}#${comment._id}`);
 		})
 		.catch(err => {
 			console.log(err);

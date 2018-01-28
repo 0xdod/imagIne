@@ -20,4 +20,5 @@ app.listen(port, () => console.log(`Server running on localhost:${port}`));
 - add dark mode
 - resize all uploaded images
 - make comment to use AJAX instead of full reloads
+- update dependencies: MD5, async 
 */

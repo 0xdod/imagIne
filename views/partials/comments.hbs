@@ -5,14 +5,15 @@
 		</h3>
 	</div>
 	<div class="card-body">
-		<ul class="media-list">
+		<ul id="sb-comments" class="media-list">
 			{{#each sidebar.comments}}
-			<li class="media">
+			<li class="mb-2 media">
 				<a
 					class="pull-left"
 					href="/images/{{image.uniqueID }}">
 					<img
-						class="media-object"
+					    style="border-radius: 50%;"
+						class="media-object mr-2"
 						width="45"
 						height="45"
 						src="/public/upload/{{ image.filename }}"
@@ -20,7 +21,7 @@
 				</a>
 				<div class="media-body">
 					{{comment}}<br />
-					<strong class="media-heading"> {{name}}</strong>
+					<em>by &nbsp;</em><strong class="media-heading">{{name}}</strong>
 					<small class="text-muted"> {{timeago timestamp }}</small>
 				</div>
 			</li>
