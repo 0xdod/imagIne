@@ -153,9 +153,50 @@ const comment = (req, res) => {
 		});
 };
 
+var fsUnlinkPromise = file => {
+	return new Promise((resolve, reject) => {
+		fs.unlink(file, err => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve();
+			}
+		});
+	});
+};
+
+const remove = async function (req, res) {
+	const image = await models.Image.findOne({
+		filename: { $regex: req.params.image_id },
+	});
+	let file = path.resolve('./public/upload/' + image.filename);
+	await fsUnlinkPromise(file);
+	await models.Comment.deleteMany({ image_id: image._id });
+	let result = await models.Image.deleteOne({ _id: image._id });
+	if (result.ok !== 1) {
+		return res.json(false);
+	}
+	return res.json(true);
+};
+
+// const remove = (req, res) => {
+// 	models.Image.findOne({ filename: { $regex: req.params.image_id } })
+// 		.then(image => {
+// 			let file = path.resolve('./public/upload/' + image.filename);
+// 			return fsUnlinkPromise(file);
+// 		})
+// 		.then(() => {
+// 			return models.Comment.remove({ image_id: image._id });
+// 		})
+// 		.then(() => {
+// 			return image.remove();
+// 		});
+// };
+
 module.exports = {
 	index,
 	create,
 	like,
 	comment,
+	remove,
 };
