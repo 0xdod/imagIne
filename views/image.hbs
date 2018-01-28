@@ -47,7 +47,7 @@
 					data-id="{{ image.uniqueID }}"
 				>
 					<i class="fa fa-comments"></i>
-					Post Comment...
+					Leave a Comment...
 				</button>
 			</div>
 		</div>
@@ -55,7 +55,7 @@
 	<div class="card-body" style="word-wrap: normal;">
 		<blockquote class="blockquote" id="post-comment">
 			<div class="row">
-				<form action="/images/{{ image.uniqueID }}/comment" class="col-sm-12">
+				<form method="POST" action="/images/{{ image.uniqueID }}/comment" class="col-sm-12">
 					<div class="form-group row col-sm-12">
 						<label for="name" class="col-sm-2 col-form-label control-label">Name:</label>
 						<div class="col-sm-10">
@@ -110,17 +110,18 @@
 
 		<ul class="media-list">
 			{{#each comments}}
-			<li class="media">
+			<li class="media mb-2" id="{{_id}}">
 				<a class="pull-left" href="#">
 					<img
-						class="media-object img-circle"
+						class="media-object img-circle mr-2"
 						src="http://www.gravatar.com/avatar/{{gravatar}}?d=monsterid&s=45"
 					/>
 				</a>
 				<div class="media-body">
-					{{ comment }}
-					<br /><strong class="media-heading">{{ name }}</strong>
+					<strong class="media-heading">{{ name }}</strong>
 					<small class="text-muted">{{ timeago timestamp }}</small>
+					<br />
+					{{ comment }}
 				</div>
 			</li>
 			{{/each}}

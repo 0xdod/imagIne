@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const methodOverride = require('method-override');
 const errorHandler = require('errorhandler');
-const moment = require('moment')
+const moment = require('moment');
 
 const routes = require('./routes');
 
@@ -28,14 +28,6 @@ module.exports = app => {
 	});
 	hbs.registerPartials(app.get('views') + '/layouts');
 	hbs.registerPartials(app.get('views') + '/partials');
-	// app.engine(
-	// 	'hbs',
-	// 	hbs.create({
-	// 		defaultLayout: 'main',
-	// 		layoutsDir: app.get('views') + '/layouts',
-	// 		partialsDir: [app.get('views') + '/partials'],
-	// 	}).engine
-	// );
 	app.set('view engine', 'hbs');
 	return app;
 };
