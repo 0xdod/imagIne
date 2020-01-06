@@ -83,10 +83,10 @@
 
 <section class="card mb-4">
 	<div class="card-header">
-		<form action="" id="sort-feed-form">
-			<select multiple  class="font-weight-bold form-control" name="sort_by" id="sort-feed">
-				<option value="latest">Newest</option>
-				<option value="viral">Most Viral</option>
+		<form class="form-inline" action="" id="sort-feed-form">
+			<select class="font-weight-bold form-control" name="sort_by" id="sort-feed">
+				<option {{#if (eq sortBy "timestamp") }}selected{{/if}} value="timestamp">Newest</option>
+				<option {{#if (eq sortBy "likes") }}selected{{/if}} value="likes">Most Viral</option>
 			</select>
 		</form>
 	</div>
@@ -123,4 +123,12 @@
 		{{/each}}
 	</div>
 </section>
+
+{{# extend "scripts"}}
+<script>
+	$('#sort-feed').on('change', function(e) {
+		window.location.href = `/?sort=${e.target.value}`
+	})
+</script>
+{{/extend}}
 {{/main}}

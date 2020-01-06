@@ -22,8 +22,26 @@ module.exports = app => {
 	if ('development' === app.get('env')) {
 		app.use(errorHandler());
 	}
+	var blocks = {};
+	hbs.registerHelper('extend', function(name, options){
+		var block = blocks[name]
+		if(!block) {
+			block = blocks[name] = []
+		}
+
+		block.push(options.fn(this))
+	})
+	hbs.registerHelper('block', function(name){
+		var val = (blocks[name] || []).join('\n');
+		blocks[name] = []
+		return val
+	})
+	app.set('views', path.join(__dirname, '../views'));
 	hbs.registerHelper('timeago', function (timestamp) {
 		return moment(timestamp).startOf('minute').fromNow();
+	});
+	hbs.registerHelper('eq', function (a, b) {
+		return a === b
 	});
 	hbs.registerPartials(app.get('views') + '/layouts');
 	hbs.registerPartials(app.get('views') + '/partials');

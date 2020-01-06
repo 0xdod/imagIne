@@ -7,7 +7,6 @@ const config = require('./server/configure');
 const port = process.env.PORT || 3000;
 let app = express();
 
-app.set('views', path.join(__dirname, '/views'));
 app = config(app);
 
 mongoose.connect(

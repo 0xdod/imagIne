@@ -12,12 +12,22 @@ const setCommentCounts = function (image, next) {
 };
 
 const index = (req, res) => {
+	let sortBy = req.query.sort;
 	const viewModel = {
 		title: 'Home | imaGine.io',
 		images: [],
+		sortBy,
 	};
-	let sortBy = req.query.sort
-	Image.find({}, {}, { sort: { timestamp: -1 } })
+	var sortOptions;
+	switch (req.query.sort) {
+		case 'likes':
+			sortOptions = { likes: -1 };
+			break;
+		case 'timestamp':
+			sortOptions = { timestamp: -1 };
+			break;
+	}
+	Image.find({}, {}, { sort: sortOptions })
 		.then(images => {
 			viewModel.images = images;
 			async.each(images, setCommentCounts, err => {
