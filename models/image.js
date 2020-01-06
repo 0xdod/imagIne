@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const path = require('path');
 
+const Comment = require('./comment');
+
 const Schema = mongoose.Schema,
 	ObjectId = Schema.ObjectId;
 
@@ -31,4 +33,12 @@ ImageSchema.virtual('uniqueID').get(function () {
 	return this.filename.replace(path.extname(this.filename), '');
 });
 
+ImageSchema.virtual('commentsCount')
+	.get(function () {
+		return this._commentsCount;
+	})
+	.set(function (count) {
+		this._commentsCount = count
+	});
+	
 module.exports = mongoose.model('Image', ImageSchema);

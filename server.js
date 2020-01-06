@@ -9,10 +9,17 @@ let app = express();
 
 app.set('views', path.join(__dirname, '/views'));
 app = config(app);
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/imaGine', {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-});
+
+mongoose.connect(
+	process.env.MONGO_URI || 'mongodb://localhost:27017/imaGine',
+	{
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+		useFindAndModify: false,
+		useCreateIndex: true,
+	}
+);
+
 mongoose.connection.on('open', () => console.log('Mongoose connected'));
 
 app.listen(port, () => console.log(`Server running on localhost:${port}`));

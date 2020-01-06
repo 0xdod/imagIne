@@ -1,10 +1,9 @@
 {{#> main}}
-
 <div class="col-md-12 text-right">
 	<button class="btn btn-success text-white mb-2" id="new-upload-button">
 		<i class="fa fa-plus"></i>
 		New
-    </button>
+	</button>
 </div>
 
 <section id="upload-form-section" class="card border border-primary mb-4">
@@ -13,21 +12,25 @@
 			Upload an Image
 		</h3>
 	</div>
-	<form id="upload-new-form" action="/images" method="POST" enctype="multipart/form-data">
+	<form
+		id="upload-new-form"
+		action="/images"
+		method="POST"
+		enctype="multipart/form-data"
+	>
 		<div class="card-body">
 			<div class="form-group row col-md-12">
 				<label for="file" class="col-md-2 col-form-label control-label"
 					>Browse:</label
 				>
-				<div class="col-md-10">
-					<input
-						type="file"
-						name="file"
-						id="file"
-						class="form-control"
-						required
-					/>
-				</div>
+
+				<input
+					type="file"
+					name="file"
+					id="file"
+					class="form-control col-md-10"
+					required
+				/>
 			</div>
 			<div class="form-group row col-md-12">
 				<label
@@ -37,7 +40,12 @@
 					Title:
 				</label>
 				<div class="col-md-10">
-					<input type="text" name="title" class="form-control" required />
+					<input
+						type="text"
+						name="title"
+						class="form-control"
+						required
+					/>
 				</div>
 			</div>
 			<div class="form-group row col-md-12">
@@ -75,23 +83,44 @@
 
 <section class="card mb-4">
 	<div class="card-header">
-		<h3 class="mb-0">
-			Latest Images
-		</h3>
+		<form action="" id="sort-feed-form">
+			<select multiple  class="font-weight-bold form-control" name="sort_by" id="sort-feed">
+				<option value="latest">Newest</option>
+				<option value="viral">Most Viral</option>
+			</select>
+		</form>
 	</div>
-	<div class="card-body row row-cols-1 row-cols-md-3 mr-0 ml-0">
+	<div class="card-body row row-cols-1 row-cols-md-2 row-cols-md-3 mr-0 ml-0">
 		{{#each images}}
-		<div class="col-md-4 text-center" style="padding-bottom: 1em;">
-			<a href="/images/{{uniqueID}}"
-				><img
-					src="{{url}}"
-					alt="{{title}}"
-					style="width: 17.5rem; height: 17.5rem;"
-					class="img-thumbnail"
-			/></a>
+		<div class="col-md-6 col-lg-4">
+			<div class="card mb-4 shadow-sm border">
+				<a class="text-decoration-none text-dark" href="/images/{{uniqueID}}"
+					><img
+						src="{{url}}"
+						alt="{{title}}"
+						style="height: 150px;"
+						class="card-img-top w-100"
+				/>
+				<div class="card-body text-center">
+					<p class="card-text m-0">{{ title }}</p>
+					<div class="d-flex justify-content-between">
+						<span>
+							<i class="far fa-heart"></i>
+							{{ likes }}
+						</span>
+						<span>
+							<i class="far fa-comments"></i>
+							{{ commentsCount }}
+						</span>
+						<span>
+							<i class="far fa-eye"></i>
+							{{ views }}
+						</span>
+					</div>
+				</div></a>
+			</div>
 		</div>
 		{{/each}}
 	</div>
 </section>
-
 {{/main}}

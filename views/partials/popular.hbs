@@ -1,24 +1,22 @@
 <div class="card mb-4">
 	<div class="card-header">
-		<h3 class="mb-0">
+		<span class="font-weight-bold">
 			Most Popular
-		</h3>
+		</span>
 	</div>
 	<div class="card-body">
 		{{#each sidebar.popular}}
-		<div class="col-md-12 row" style="padding-bottom: 0.5em;">
+		<div class="row px-3 mb-3">
 			<a class="pull-left" href="/images/{{uniqueID}}">
 				<img
 					src="{{url}}"
 					style="width: 75px; height: 75px;"
 					class="img-thumbnail"
 			/></a>
-			<div class="ml-1">
-				<strong>{{ title}} </strong>
+			<div class="ml-3">
+				<strong>{{ title}}</strong>
 				<br />
-				<small
-					><em class="text-muted">{{ timeago timestamp }}</em></small
-				>
+				<small><em class="text-muted">{{ timeago timestamp }}</em></small>
 			</div>
 		</div>
 		{{/each}}

@@ -2,7 +2,7 @@
 
 <section id="image-card" class="card border border-primary mb-4">
 	<div class="card-header bg-primary text-white">
-		<h2>{{ image.title }}</h2>
+		<span class="font-weight-bold">{{ image.title }}</span>
 	</div>
 	<div class="card-body">
 		<p class="">{{ image.description }}</p>
@@ -17,23 +17,22 @@
 	<div class="card-footer">
 		<div class="row">
 			<div class="col-md-8">
-				<button
-					class="btn btn-success"
+				<span
+					class="text-danger"
 					id="btn-like"
 					data-id="{{ image.uniqueID }}"
 				>
-					<i class="fa fa-heart"></i>
-					Like
-				</button>
-				<strong class="likes-count">{{ image.likes }}</strong> &nbsp; -
-				&nbsp; <i class="fa fa-eye"></i
-				><strong>{{ image.views}}</strong> &nbsp; - &nbsp; Posted:
-				<em class="text-muted">{{timeago image.timestamp }}</em>
+					<i class="fas fa-heart"></i>
+				</span>
+				<strong class="likes-count">{{ image.likes }}</strong> &nbsp;-&nbsp;
+				<i class="fa fa-eye"></i>
+				<strong>{{ image.views}}</strong> &nbsp; - &nbsp;
+				Posted: <em class="text-muted">{{timeago image.timestamp }}</em>
 			</div>
 			<div class="col-md-4 text-right">
-				<button class="btn btn-danger" id="btn-delete" data-id="{{ image.uniqueID }}">
-					<i class="fa fa-times"></i>
-				</button>
+				<span class="text-danger" id="btn-delete" data-id="{{ image.uniqueID }}">
+					<i class="fas fa-trash-alt"></i>
+				</span>
 			</div>
 		</div>
 	</div>
