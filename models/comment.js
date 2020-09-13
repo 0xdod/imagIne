@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 const comment = {
+	author_id: { type: ObjectId },
 	image_id: { type: ObjectId },
 	email: String,
 	name: String,

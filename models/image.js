@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const path = require('path');
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema,
+	ObjectId = Schema.ObjectId;
 
 const image = {
+	user_id: { type: ObjectId },
 	title: String,
 	description: String,
 	filename: String,
