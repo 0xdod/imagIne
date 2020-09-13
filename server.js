@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 let app = express();
 
 app = config(app);
-mongoose.connect('mongodb://localhost:27017/imaGine', {
+mongoose.connect(process.MONGODB_URI || 'mongodb://localhost:27017/imaGine', {
 	useNewUrlParser: true,
 });
 mongoose.connection.on('open', () => console.log('Mongoose connected'));
