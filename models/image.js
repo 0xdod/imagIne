@@ -9,6 +9,8 @@ const image = {
 	title: String,
 	description: String,
 	filename: String,
+	url: String,
+	secureURL: String,
 	views: {
 		type: Number,
 		default: 0,

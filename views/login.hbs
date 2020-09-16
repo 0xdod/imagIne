@@ -1,0 +1,27 @@
+{{#> login}}
+<div class="card mx-auto my-auto">
+	<div class="card-header">
+		<h5>Login</h5>
+	</div>
+	<div class="card-body">
+		<form action="/accounts/login" method="POST">
+			<label for="username">Username:</label><br />
+			<input
+				type="text"
+				id="username"
+				name="username"
+				class="form-control"
+			/>
+			<label for="password">Password:</label><br />
+			<input
+				type="password"
+				id="password"
+				name="password"
+				class="form-control"
+			/><br>
+			<input type="submit" class="btn btn-success" value="Sign up" />
+		</form>
+	</div>
+</div>
+
+{{/login}}

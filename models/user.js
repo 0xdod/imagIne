@@ -1,18 +1,30 @@
 const mongoose = require('mongoose');
+bcrypt = require('bcrypt');
 
 const Schema = mongoose.Schema;
 
-const user = new Schema({
+const userSchema = new Schema({
 	username: String,
 	email: String,
 	password: String,
 	created_at: Date,
+	updated_at: Date,
+	deleted_at: Date,
 });
 
-user.pre('save', function (next) {
-	var user = this;
-	user.created_at = Date.now();
-	next();
-});
+// userSchema.pre('save', function (next) {
+// 	var user = this;
+// 	user.created_at = Date.now();
+// 	next();
+// });
 
-module.exports = mongoose.model('User', user);
+module.exports = mongoose.model('User', userSchema);
+
+// bcrypt.genSalt(10, (err, salt) => {
+// 	bcrypt.hash(password, salt, (err, hash) => {});
+// });
+
+//login
+// bcrypt.compare(password, hashedPassword, (err, res) => {
+// 	console.log(res);
+// });
