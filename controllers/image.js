@@ -65,8 +65,7 @@ const create = (req, res) => {
             //let targetPath = path.resolve('./public/upload/' + imgUrl + ext);
 
             if (isExtAllowed(ext)) {
-
-              cloudinary.uploader.upload(imgUrl+ext, function(result){
+              cloudinary.uploader.upload(tempPath, function(result){
                 const newImg = new models.Image({
                   title: req.body.title,
                   description: req.body.description,
