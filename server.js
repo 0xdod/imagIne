@@ -9,7 +9,7 @@ let app = express();
 
 app = config(app);
 mongoose.connect(
-	process.env.MONGOLAB_AMBER_URI || 'mongodb://localhost:27017/imaGine',
+	process.env.MONGO_URI || 'mongodb://localhost:27017/imaGine',
 	{
 		useNewUrlParser: true,
 	}
