@@ -22,7 +22,6 @@ module.exports = app => {
 	if ('development' === app.get('env')) {
 		app.use(errorHandler());
 	}
-	app.set('views', path.join(__dirname, '../views'));
 	hbs.registerHelper('timeago', function (timestamp) {
 		return moment(timestamp).startOf('minute').fromNow();
 	});

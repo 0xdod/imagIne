@@ -3,7 +3,7 @@ const path = require('path');
 const sidebar = require('../helpers/sidebar');
 const models = require('../models');
 const MD5 = require('md5.js');
-const cloudinary = require('cloudinary')
+const cloudinary = require('cloudinary');
 
 const index = (req, res) => {
   const viewModel = {
@@ -62,30 +62,33 @@ const create = (req, res) => {
           } else {
             let tempPath = req.file.path;
             let ext = path.extname(req.file.originalname).toLowerCase();
-            //let targetPath = path.resolve('./public/upload/' + imgUrl + ext);
+            let targetPath = path.resolve('./public/upload/' + imgUrl + ext);
 
             if (isExtAllowed(ext)) {
-              cloudinary.uploader.upload(tempPath, function(result){
-                const newImg = new models.Image({
-                  title: req.body.title,
-                  description: req.body.description,
-                  filename: imgUrl + ext,
-                  url: result.url,
-                  secureURL: result.secure_url
+              try {
+                cloudinary.uploader.upload(tempPath, function (result) {
+                  const newImg = new models.Image({
+                    title: req.body.title,
+                    description: req.body.description,
+                    filename: imgUrl + ext,
+                    url: result.url,
+                    secureURL: result.secure_url,
+                  });
+                  resolve(newImg);
                 });
-                resolve(newImg);
-              })
+              } catch {
+                fs.rename(tempPath, targetPath, err => {
+                  if (err) reject(err);
 
-              // fs.rename(tempPath, targetPath, err => {
-              //   if (err) reject(err);
-
-              //   const newImg = new models.Image({
-              //     title: req.body.title,
-              //     description: req.body.description,
-              //     filename: imgUrl + ext,
-              //   });
-              //   resolve(newImg);
-              // });
+                  const newImg = new models.Image({
+                    title: req.body.title,
+                    description: req.body.description,
+                    filename: imgUrl + ext,
+                    url: `/public/upload/${imgUrl + ext}`,
+                  });
+                  resolve(newImg);
+                });
+              }
             } else {
               fs.unlink(tempPath, err => {
                 res.json(400, {

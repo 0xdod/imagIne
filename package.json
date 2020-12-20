@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "mocha -r tests/testhelper.js -R spec tests/**/*.test.js"
   },
   "engines": {
     "node": "12.18.1"
@@ -30,7 +31,7 @@
     "multer": "^1.4.2",
     "passport": "^0.4.1"
   },
-  "main": "app.js",
+  "main": "server.js",
   "repository": {
     "type": "git",
     "url": "git+https://fibreactive@bitbucket.org/fibreactive/imagine.git"

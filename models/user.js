@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 bcrypt = require('bcrypt');
 
 const Schema = mongoose.Schema;
-
+//implement social auth
 const userSchema = new Schema({
-	username: String,
-	email: String,
+	username: String, // unique
+	email: String, //unique
 	password: String,
 	created_at: Date,
 	updated_at: Date,

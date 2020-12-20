@@ -2,9 +2,15 @@
 	box-sizing: border-box;
 }
 
+:root {
+	font-size: 62.5%;
+}
+
 body {
+	font-size: 1.6rem;
 	padding: 50px;
 	height: 100vh;
+
 }
 
 a {
@@ -13,4 +19,10 @@ a {
 
 #sb-comments {
 	padding-left: 0;
+}
+
+@media (max-width: 768px) {
+	:root {
+		font-size: 50%;
+	}
 }
