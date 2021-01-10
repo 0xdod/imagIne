@@ -1,0 +1,93 @@
+{{#> login}}
+<div class="card mx-auto my-auto">
+	<div class="card-header">
+		<h5>Sign up</h5>
+	</div>
+	<div class="card-body">
+		<form action="/accounts/login" method="POST">
+			<div class="row">
+				<div class="col">
+					<div class="form-group">
+						<label for="email">Email:</label>
+						<input
+							type="email"
+							id="email"
+							name="email"
+							class="form-control"
+							autofocus
+						/>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label for="username">Username:</label>
+						<input
+							type="text"
+							id="username"
+							name="username"
+							class="form-control"
+						/>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="form-group">
+						<label for="firstname">Firstname:</label>
+						<input
+							type="ftext"
+							id="firstname"
+							name="firstname"
+							class="form-control"
+						/>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label for="lastname">Lastname:</label>
+						<input
+							type="text"
+							id="lastname"
+							name="lastname"
+							class="form-control"
+						/>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="form-group">
+						<label for="password">Password:</label>
+						<input
+							type="password"
+							id="password"
+							name="password"
+							class="form-control"
+						/>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label for="password2">Confirm Password:</label>
+						<input
+							type="password"
+							id="password2"
+							name="password2"
+							class="form-control"
+						/>
+					</div>
+				</div>
+			</div>
+
+			<div>
+				<input
+					type="submit"
+					class="btn btn-success btn-block"
+					value="Sign up"
+				/>
+			</div>
+		</form>
+	</div>
+</div>
+{{/login}}

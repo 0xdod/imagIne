@@ -3,7 +3,7 @@ const path = require('path');
 const hbs = require('hbs');
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
+//const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const methodOverride = require('method-override');
 const errorHandler = require('errorhandler');
@@ -16,7 +16,7 @@ module.exports = app => {
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json());
 	app.use(methodOverride());
-	app.use(cookieParser('some-secret-value-here'));
+	//app.use(cookieParser('some-secret-value-here'));
 	routes(app);
 	app.use('/public/', express.static(path.join(__dirname, '../public')));
 	if ('development' === app.get('env')) {
@@ -28,7 +28,6 @@ module.exports = app => {
 		if(!block) {
 			block = blocks[name] = []
 		}
-
 		block.push(options.fn(this))
 	})
 	hbs.registerHelper('block', function(name){

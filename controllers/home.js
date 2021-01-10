@@ -23,7 +23,7 @@ const index = (req, res) => {
 		case 'likes':
 			sortOptions = { likes: -1 };
 			break;
-		case 'timestamp':
+		default:
 			sortOptions = { timestamp: -1 };
 			break;
 	}
