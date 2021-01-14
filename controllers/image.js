@@ -10,6 +10,7 @@ const index = (req, res) => {
     title: '',
     image: {},
     comments: [],
+    user: req.user,
   };
   models.Image.findOne({ filename: { $regex: req.params.image_id } })
     .then(image => {

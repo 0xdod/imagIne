@@ -17,6 +17,7 @@ const index = (req, res) => {
 		title: 'Home | imaGine.io',
 		images: [],
 		sortBy,
+		user: req.user,
 	};
 	var sortOptions;
 	switch (req.query.sort) {

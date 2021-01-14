@@ -15,6 +15,10 @@ const user = {
 		required: true,
 		unique: true,
 	},
+	password: {
+		type: String,
+		required: true,
+	},
 	avatar_url: String,
 	created_at: {
 		type: Date,

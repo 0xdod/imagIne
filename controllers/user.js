@@ -1,43 +1,54 @@
+const passport = require('passport');
+// LocalStrategy = require('passport-local').Strategy;
+
 const User = require('../models/user');
-const passport = require('passport'),
-	LocalStrategy = require('passport-local').Strategy;
+const { generatePasswordHash } = require('../utils/passwordUtils');
 
-const signup = (req, res) => {
-	if (req.method == 'POST') {
-		return;
+const signup = async (req, res) => {
+	try {
+		if (req.method === 'POST') {
+			const user = new User(req.body);
+			const hash = await generatePasswordHash(user.password);
+			user.email = user.email.toLowerCase();
+			user.username = user.username.toLowerCase();
+			user.password = hash;
+			await user.save();
+			console.log('Succesfully created user: ', user);
+			res.redirect('/');
+		} else {
+			res.render('signup', { layout: 'login' });
+		}
+	} catch (err) {
+		res.status(400).render('error', {
+			error: err,
+			message: 'Error occured',
+		});
 	}
-	res.render('signup', { layout: 'login' });
 };
 
-const login = (req, res) => {
-	//const { username, password } = req.body;
+//TODO use flash message to display login error
+const login = async (req, res) => {
 	if (req.method === 'POST') {
-		passport.use(
-			new LocalStrategy((username, password, done) => {
-				User.findOne({ email: username }, (err, user) => {
-					if (err) return done(err);
-					if (!user) {
-						User.findOne({ username: username }).then(user => {
-							if (!user) {
-								return done(null, false, {
-									message: 'User not found.',
-								});
-							}
-							if (!user.validPassword(password)) {
-								return done(null, false, {
-									message: 'Password incorrect.',
-								});
-							}
-
-							return done(null, user);
-						});
-					}
-				});
-			})
-		);
-		return;
+		if (req.isAuthenticated) {
+			var next = req.session.next || req.body.next;
+			res.redirect(req.body.next);
+			return;
+		}
 	}
-	res.render('login', { layout: 'login' });
+	var error =
+		req.query.auth === 'false'
+			? {
+					message: 'Invalid login details, try again',
+			  }
+			: null;
+	var next = req.query.next ? req.query.next : '/';
+	req.session.next = next;
+	res.render('login', { layout: 'login', error, next });
 };
 
-module.exports = { signup, login };
+const logout = (req, res) => {
+	req.logout();
+	res.redirect('/');
+};
+
+module.exports = { signup, login, logout };
