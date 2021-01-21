@@ -2,13 +2,15 @@ const path = require('path');
 
 const express = require('express');
 
-const config = require('./server/configure');
-const { mongoose } = require('./server/mongoose');
+const config = require('./config/server');
+const { mongoose } = require('./config/mongoose');
 
 const port = process.env.PORT || 3000;
 const app = config(express());
 
-app.listen(port, () => console.log(`Server running on localhost:${port}`));
+var server = app.listen(port, function () {
+	console.log('Listening on port ' + server.address().port);
+});
 
 /*TODO
 - add users, auth etc

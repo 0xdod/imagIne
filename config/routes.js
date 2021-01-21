@@ -1,9 +1,9 @@
 const path = require('path');
 
-const express = require('express'),
-	router = express.Router(),
+const router = require('express').Router(),
 	multer = require('multer'),
 	passport = require('passport');
+
 const home = require('../controllers/home'),
 	image = require('../controllers/image'),
 	user = require('../controllers/user'),
