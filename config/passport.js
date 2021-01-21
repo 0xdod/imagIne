@@ -1,10 +1,8 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const { connection } = require('./mongoose');
-
-const { validatePassword } = require('../utils/passwordUtils');
 
 const User = require('../models/user');
+const { validatePassword } = require('../utils/passwordUtils');
 
 const verifyCallback = async (username, password, done) => {
 	try {

@@ -3,19 +3,27 @@
 	{{> head this }}
 	<body class="h-100">
 		{{> header this }}
-		<main class="container-lg">
+		<div class="container-fluid">
 			<div class="row">
-				<div class="col-md-8">
+				<main class="col-md-{{#if showSidebar}}8{{else}}12{{/if}}">
 					{{{ body }}}
-				</div>
+				</main>
+				{{#if showSidebar }}
 				<aside class="col-md-4">
 					{{> stats this }} {{> popular this }} {{> comments this }}
 				</aside>
+				{{/if}}
 			</div>
-		</main>
+		</div>
 		{{> footer this }}
-		<script src="/public/js/lib/jquery.min.js"></script>
-		<script src="/public/js/app.js"></script>
+
+		{{#if (eq 'production' getEnv )}}
+
+		{{ else }}
+		<script src="{{ static 'js/lib/jquery.min.js' }}"></script>
+		<script src="{{ static 'js/bootstrap.bundle.min.js' }}"></script>
+		{{/if}}
+		<script src="{{ static 'js/app.js' }}"></script>
 		{{{block "scripts"}}}
 	</body>
 </html>

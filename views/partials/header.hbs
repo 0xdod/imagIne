@@ -1,18 +1,24 @@
 <header class="mb-3 border-bottom p-3">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col">
 				<h1><a class="text-decoration-none" href="/">imaGine.io</a></h1>
 			</div>
-			{{#unless user }}
-			<div class="ml-md-auto">
-				<a href="/login" class="btn btn-sm btn-success">Sign in</a> or
-				<a href="/signup" class="btn btn-sm btn-success">Sign up</a>
-			</div>
-			{{/unless }}
 			{{#if user }}
+			<div class="col">
+				<button class="btn btn-success text-white mb-2" id="new-upload-button">
+					<i class="fa fa-plus"></i>
+					New
+				</button>
+			</div>
+
 			<div class="ml-auto">
 				<a href="/logout" class="btn btn-sm btn-danger">Logout</a>
+			</div>
+			{{ else }}
+			<div class="ml-md-auto">
+				<a href="/login" class="btn btn-sm btn-outline-primary">Sign in</a>
+				<a href="/signup" class="btn btn-sm btn-primary">Sign up</a>
 			</div>
 			{{/if}}
 		</div>

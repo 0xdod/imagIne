@@ -1,7 +1,8 @@
-var Stats = require('./stats');
-var Images = require('./images');
-var Comments = require('./comments');
 const async = require('async');
+
+const Stats = require('./stats');
+const Images = require('./images');
+const Comments = require('./comments');
 
 module.exports = (viewModel, callback) => {
 	async.parallel(

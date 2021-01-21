@@ -1,15 +1,12 @@
-const path = require('path');
+const http = require('http');
 
-const express = require('express');
-
-const config = require('./config/server');
-const { mongoose } = require('./config/mongoose');
+const app = require('./app');
 
 const port = process.env.PORT || 3000;
-const app = config(express());
+const server = http.createServer(app);
 
-var server = app.listen(port, function () {
-	console.log('Listening on port ' + server.address().port);
+var listener = server.listen(port, function () {
+	console.log('Listening on port ' + listener.address().port);
 });
 
 /*TODO

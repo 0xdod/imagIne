@@ -1,4 +1,5 @@
 const exphbs = require('express-handlebars');
+const moment = require('moment');
 
 var blocks = {};
 const hbs = app => {
@@ -55,6 +56,7 @@ const hbs = app => {
 				}
 				return newUrl;
 			},
+			getEnv: () => app.get('env'),
 		},
 	});
 };

@@ -1,27 +1,18 @@
-const passport = require('passport');
-// LocalStrategy = require('passport-local').Strategy;
-
-const User = require('../models/user');
-const { generatePasswordHash } = require('../utils/passwordUtils');
+const userService = require('../services/user');
 
 const signup = async (req, res) => {
 	try {
 		if (req.method === 'POST') {
-			const user = new User(req.body);
-			const hash = await generatePasswordHash(user.password);
-			user.email = user.email.toLowerCase();
-			user.username = user.username.toLowerCase();
-			user.password = hash;
-			await user.save();
+			await userService.create(req.body);
 			console.log('Succesfully created user: ', user);
 			res.redirect('/');
-		} else {
-			res.render('signup', { layout: 'login' });
+			return;
 		}
+		res.render('signup', {});
 	} catch (err) {
 		res.status(400).render('error', {
 			error: err,
-			message: 'Error occured',
+			message: 'Bad request',
 		});
 	}
 };
@@ -30,8 +21,8 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
 	if (req.method === 'POST') {
 		if (req.isAuthenticated) {
-			var next = req.session.next || req.body.next;
-			res.redirect(req.body.next);
+			var next = req.body.next || '/';
+			res.redirect(next);
 			return;
 		}
 	}
@@ -41,9 +32,8 @@ const login = async (req, res) => {
 					message: 'Invalid login details, try again',
 			  }
 			: null;
-	var next = req.query.next ? req.query.next : '/';
-	req.session.next = next;
-	res.render('login', { layout: 'login', error, next });
+	var next = req.query.next;
+	res.render('login', { error, next });
 };
 
 const logout = (req, res) => {
