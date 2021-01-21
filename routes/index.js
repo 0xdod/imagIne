@@ -4,9 +4,9 @@ const home = require('./home'),
 	images = require('./images');
 //users = require('./users');
 
-module.exports = app => {
+module.exports = () => {
 	router.use('/', home());
 	router.use('/images', images());
 	//router.use('/', users());
-	app.use(router);
+	return router;
 };

@@ -11,4 +11,4 @@ const dbOptions = {
 mongoose.connect(mongouri, dbOptions);
 mongoose.connection.on('open', () => console.log('Mongoose connected'));
 
-module.exports = { mongoose };
+module.exports = mongoose;

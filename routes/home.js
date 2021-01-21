@@ -1,9 +1,8 @@
 const router = require('express').Router();
 
-const passport = require('passport');
-
 const home = require('../controllers/home');
 const user = require('../controllers/user');
+const passport = require('../config/passport');
 
 module.exports = () => {
 	router.get('/', home.index);
@@ -21,3 +20,5 @@ module.exports = () => {
 
 	return router;
 };
+
+// TEST ROUTING WORKS.
