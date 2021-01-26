@@ -5,11 +5,12 @@ const router = require('express').Router(),
 
 const image = require('../controllers/image'),
 	{ authorize } = require('../middleware/auth'),
-	{ checkFile } = require('../middleware/image');
+	{ checkFile, sendThumbnail } = require('../middleware/image');
 
 const uploads = multer({ dest: path.join(__dirname, '../media') });
 
 module.exports = () => {
+	router.use('/thumbs/i/', sendThumbnail);
 	router.get('/', image.create);
 	router.get('/:image_id', image.detail);
 	router.use(authorize);

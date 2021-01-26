@@ -36,13 +36,17 @@
 		{{> footer this }}
 
 		
-		{{#if (eq 'production' getEnv )}}
+		{{#if (eq 'production' (getEnv '') )}}
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js" integrity="sha512-wV7Yj1alIZDqZFCUQJy85VN+qvEIly93fIQAN7iqDFCPEucLCeNFz4r35FCo9s6WrpdDQPi80xbljXB8Bjtvcg==" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/mustache@4.1.0/mustache.min.js" integrity="sha256-mh7gV/es1uh2rW94a1OI1CO/jBNd9O7s70tkiJ69rOQ=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
 		{{ else }}
 		<script src="{{ static 'js/lib/jquery.min.js' }}"></script>
 		<script src="{{ static 'js/lib/bootstrap.bundle.min.js' }}"></script>
-		{{/if}}
-		<script src="{{ static 'js/lib/moment.min.js' }}"></script>
 		<script src="{{ static 'js/lib/mustache.min.js' }}"></script>
+		<script src="{{ static 'js/lib/moment.min.js' }}"></script>
+		{{/if}}
 		<script src="{{ static 'js/app.js' }}"></script>
 		{{{block "scripts"}}}
 	</body>

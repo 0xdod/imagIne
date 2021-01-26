@@ -2,6 +2,7 @@ const path = require('path');
 
 const exphbs = require('express-handlebars');
 const moment = require('moment');
+const cloudinary = require('cloudinary').v2;
 
 var blocks = {};
 const setup = app => {
@@ -48,13 +49,18 @@ const setup = app => {
 				return obj;
 			},
 			thumbnail: (url, opts = { h: 320, w: 320 }) => {
-				var newUrl = `/i/t/${url}`;
+				const image = path.basename(url);
+				if (app.get('env') === 'production') {
+					return cloudinary.url(image, buildThumbnailOptions(opts));
+				}
+
+				var newUrl = `/images/thumbs/i/${image}`;
 				var i = 0;
 				for (let opt in opts) {
 					if (i > 0) {
 						newUrl += '&';
 					}
-					newUrl += `${opt}=${opts[opt]}`;
+					newUrl += `?${opt}=${opts[opt]}`;
 				}
 				return newUrl;
 			},
@@ -69,3 +75,19 @@ const setup = app => {
 module.exports = {
 	setup,
 };
+
+function buildThumbnailOptions(params) {
+	const allOptions = {
+		height: Number(params.h),
+		percentage: Number(params.p),
+		width: Number(params.w),
+	};
+
+	const options = {};
+	for (let prop in allOptions) {
+		if (allOptions[prop]) {
+			options[prop] = allOptions[prop];
+		}
+	}
+	return options;
+}
