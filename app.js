@@ -6,6 +6,7 @@ const session = require('express-session');
 const logger = require('morgan');
 const methodOverride = require('method-override');
 const errorHandler = require('errorhandler');
+const helmet = require('helmet');
 const MongoStore = require('connect-mongo')(session);
 
 const passport = require('./config/passport');
@@ -25,6 +26,7 @@ const sessionOptions = app => {
 	const secret = process.env.SESSION_SECRET || 'some-secret-value-here';
 	const opts = {
 		secret,
+		name: 'session.id',
 		resave: false,
 		saveUninitialized: true,
 		store: mongoStore,
@@ -33,8 +35,8 @@ const sessionOptions = app => {
 		},
 	};
 	if (app.get('env') === 'production') {
-		opts.cookie.secure = true;
-		opts.cookie.domain = 'imagepload.herokuapp.com';
+		//opts.cookie.secure = true;
+		//opts.cookie.domain = 'imagepload.herokuapp.com';
 	}
 	return opts;
 };
@@ -49,6 +51,12 @@ app.engine('.hbs', hbs.setup(app).engine);
 
 //-------Middlewares-------------------------
 app.use(logger('dev'));
+if (app.get('env') === 'production') {
+	app.set('trust proxy', 1);
+	app.use(helmet());
+	app.disable('x-powered-by');
+}
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride());
