@@ -35,7 +35,7 @@ const sessionOptions = app => {
 		},
 	};
 	if (app.get('env') === 'production') {
-		opts.cookie.secure = true;
+		//opts.cookie.secure = true;
 		//opts.cookie.domain = 'imagepload.herokuapp.com';
 	}
 	return opts;
