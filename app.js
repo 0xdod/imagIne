@@ -29,7 +29,7 @@ const sessionOptions = app => {
 		saveUninitialized: true,
 		store: mongoStore,
 		cookie: {
-			maxAge: 1000 * 60 * 60 * 24,
+			maxAge: 14 * 1000 * 60 * 60 * 24,
 		},
 	};
 	if (app.get('env') === 'production') {
@@ -57,9 +57,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 // useful for accessing user object in template
 app.use((req, res, next) => {
-	if (req.user) {
-		res.locals.user = req.user;
-	}
+	res.locals.user = req.user;
 	next();
 });
 app.use((req, res, next) => {
