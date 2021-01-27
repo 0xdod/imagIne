@@ -53,8 +53,8 @@ app.engine('.hbs', hbs.setup(app).engine);
 app.use(logger('dev'));
 if (app.get('env') === 'production') {
 	app.set('trust proxy', 1);
-	app.use(helmet());
-	app.disable('x-powered-by');
+	//app.use(helmet());
+	//app.disable('x-powered-by');
 }
 
 app.use(express.urlencoded({ extended: true }));
