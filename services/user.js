@@ -42,7 +42,7 @@ UserService.prototype.create = async function (user) {
 	newUser.email = newUser.email.toLowerCase();
 	newUser.username = newUser.username.toLowerCase();
 	const emailHash = new MD5().update(user.email).digest('hex');
-	newUser.avatar_url = `http://www.gravatar.com/avatar/${emailHash}?d=monsterid&s=45`;
+	newUser.avatar_url = `https://www.gravatar.com/avatar/${emailHash}?d=monsterid&s=45`;
 	return await newUser.save();
 };
 

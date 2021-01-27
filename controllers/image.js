@@ -207,7 +207,7 @@ function NewImage(user, payload) {
     user: author,
     title: payload.title,
     description: payload.description,
-    url: payload.url,
+    url: payload.secureURL,
     filename: payload.filename,
     secureURL: payload.secureURL,
   };
