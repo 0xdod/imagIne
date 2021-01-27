@@ -7,6 +7,7 @@ const logger = require('morgan');
 const methodOverride = require('method-override');
 const errorHandler = require('errorhandler');
 const helmet = require('helmet');
+const favicon = require('serve-favicon');
 const MongoStore = require('connect-mongo')(session);
 
 const passport = require('./config/passport');
@@ -56,7 +57,7 @@ if (app.get('env') === 'production') {
 	//app.use(helmet());
 	//app.disable('x-powered-by');
 }
-
+app.use(favicon(path.join(app.get('static'), 'favicon.ico')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride());
